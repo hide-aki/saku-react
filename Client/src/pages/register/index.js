@@ -97,12 +97,7 @@ function Register() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form
-          autoComplete="off"
-          onSubmit={handleSubmit}
-          className={classes.form}
-          noValidate
-        >
+        <form onSubmit={handleSubmit} className={classes.form} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -119,7 +114,7 @@ function Register() {
                 label="Email Address"
                 name="email"
                 type="email"
-                autoComplete="email"
+                autoComplete="off"
               />
             </Grid>
             <Grid item xs={12}>
@@ -136,7 +131,7 @@ function Register() {
                 id="username"
                 label="Username"
                 name="username"
-                autoComplete="username"
+                autoComplete="off"
               />
             </Grid>
             <Grid item xs={12}>

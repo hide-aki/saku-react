@@ -87,6 +87,7 @@ function Produk() {
     actions: [
       {
         icon: () => <AddBox />,
+        tooltip: 'Add Product',
         isFreeAction: true,
         onClick: () => {
           setOpen(true);
@@ -94,6 +95,7 @@ function Produk() {
       },
       {
         icon: () => <Edit />,
+        tooltip: 'Edit Product',
         onClick: (event, rowData) => {
           setOpenEdit(true);
           setPreviousData({
@@ -116,7 +118,11 @@ function Produk() {
     setLoading(true);
     async function getData() {
       try {
-        const res = await axios.get('/api/v1/produk', config);
+        const res = await axios.get('/api/v1/produk', {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('key')}`
+          }
+        });
         if (res.data.data.length > 0) {
           setTable(table => {
             return {
@@ -142,7 +148,16 @@ function Produk() {
         }
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        setLoading(false);
+        const code = error.message;
+        const getCode = code.substr(32, 3);
+        if (getCode === '401') {
+          enqueueSnackbar('User tidak terautentikasi, silahkan login kembali', {
+            variant: 'error'
+          });
+        } else if (getCode === '500') {
+          enqueueSnackbar('Server dalam masalah', { variant: 'error' });
+        }
       }
     }
     getData();

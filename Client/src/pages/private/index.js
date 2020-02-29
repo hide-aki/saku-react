@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom';
 import clsx from 'clsx';
 import Drawer from '@material-ui/core/Drawer';
 import Box from '@material-ui/core/Box';
@@ -35,210 +35,228 @@ import Pembelian from '../private/transaksi/pembelian';
 import Jurnal from '../private/laporan/jurnal';
 import Bukbes from '../private/laporan/bukubesar';
 
-//user Context 
+//user Context
 import { UserContext } from '../../config/UserContext';
 
 export default function Private() {
-    const { setUser } = useContext(UserContext);
-    const classes = useStyles();
-    const [open, setOpen] = React.useState(true);
+  const { setUser } = useContext(UserContext);
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
 
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
-    const handleSignOut = () => {
-        if (window.confirm('Apakah anda yakin ingin Sign-out?')) {
-            window.sessionStorage.clear();
-            setUser(null);
-        }
+  const handleSignOut = () => {
+    if (window.confirm('Apakah anda yakin ingin Sign-out?')) {
+      window.sessionStorage.clear();
+      setUser(null);
     }
+  };
 
-    return (
-        <div className={classes.root}>
-            <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-                <Toolbar className={classes.toolbar}>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                        <Switch>
-                            <Route path="/produk" children="Product"></Route>
-                            <Route path="/pembelian" children="Purchase"></Route>
-                            <Route path="/penjualan" children="Sale"></Route>
-                            <Route path="/jurnal" children="General Journal"></Route>
-                            <Route path="/bukbes" children="Ledger"></Route>
-                            <Route children="Dashboard"></Route>
-                        </Switch>
-                    </Typography>
-                    <IconButton onClick={handleSignOut} color="inherit">
-                        <PowerSettingsNewIcon />
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                variant="permanent"
-                classes={{
-                    paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-                }}
-                open={open}
-            >
-                <div className={classes.toolbarIcon}>
-                    <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </div>
-                <Divider />
-                <List>
-                    <Route
-                        exact
-                        path="/"
-                        children={({ match, history }) => {
-                            return (
-                                <ListItem
-                                    button
-                                    selected={match ? true : false}
-                                    onClick={() => {
-                                        history.push('/')
-                                    }}>
-                                    <ListItemIcon>
-                                        <DashboardIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Dashboard"></ListItemText>
-                                </ListItem>
-                            )
-                        }}
-                    ></Route>
-                </List>
-                <Divider />
-                <List>
-                    <ListSubheader inset>Master</ListSubheader>
-                    <Route
-                        path="/produk"
-                        children={({ match, history }) => {
-                            return (
-                                <ListItem
-                                    button
-                                    selected={match ? true : false}
-                                    onClick={() => {
-                                        history.push('/produk')
-                                    }}>
-                                    <ListItemIcon>
-                                        <AddToQueueIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Produk"></ListItemText>
-                                </ListItem>
-                            )
-                        }}
-                    ></Route>
-                </List>
-                <Divider />
-                <List>
-                    <ListSubheader inset>Transaction</ListSubheader>
-                    <Route
-                        path="/pembelian"
-                        children={({ match, history }) => {
-                            return (
-                                <ListItem
-                                    button
-                                    selected={match ? true : false}
-                                    onClick={() => {
-                                        history.push('/pembelian')
-                                    }}>
-                                    <ListItemIcon>
-                                        <ShoppingBasketIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Purchase"></ListItemText>
-                                </ListItem>
-                            )
-                        }}
-                    ></Route>
-                    <Route
-                        path="/penjualan"
-                        children={({ match, history }) => {
-                            return (
-                                <ListItem
-                                    button
-                                    selected={match ? true : false}
-                                    onClick={() => {
-                                        history.push('/penjualan')
-                                    }}>
-                                    <ListItemIcon>
-                                        <StoreIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Sale"></ListItemText>
-                                </ListItem>
-                            )
-                        }}
-                    ></Route>
-                </List>
-                <Divider />
-                <List>
-                    <ListSubheader inset>Report</ListSubheader>
-                    <Route
-                        path="/jurnal"
-                        children={({ match, history }) => {
-                            return (
-                                <ListItem
-                                    button
-                                    selected={match ? true : false}
-                                    onClick={() => {
-                                        history.push('/jurnal')
-                                    }}>
-                                    <ListItemIcon>
-                                        <AssignmentIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="General Journal"></ListItemText>
-                                </ListItem>
-                            )
-                        }}
-                    ></Route>
-                    <Route
-                        path="/bukbes"
-                        children={({ match, history }) => {
-                            return (
-                                <ListItem
-                                    button
-                                    selected={match ? true : false}
-                                    onClick={() => {
-                                        history.push('/bukbes')
-                                    }}>
-                                    <ListItemIcon>
-                                        <BookIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Ledger"></ListItemText>
-                                </ListItem>
-                            )
-                        }}
-                    ></Route>
-                </List>
-                <Divider />
-            </Drawer>
-            <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
-                <Container maxWidth="lg" className={classes.container}>
-                    <Switch>
-                        <Route path="/produk" component={Produk}></Route>
-                        <Route path="/pembelian" component={Pembelian}></Route>
-                        <Route path="/penjualan" component={Penjualan}></Route>
-                        <Route path="/jurnal" component={Jurnal}></Route>
-                        <Route path="/bukbes" component={Bukbes}></Route>
-                        <Route component={Beranda}></Route>
-                    </Switch>
-                    <Box pt={10}>
-                        <Copyright />
-                    </Box>
-                </Container>
-            </main>
-        </div >
-    );
+  return (
+    <div className={classes.root}>
+      <AppBar
+        position="absolute"
+        className={clsx(classes.appBar, open && classes.appBarShift)}
+      >
+        <Toolbar className={classes.toolbar}>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            className={clsx(
+              classes.menuButton,
+              open && classes.menuButtonHidden
+            )}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            className={classes.title}
+          >
+            <Switch>
+              <Route path="/produk" children="Product"></Route>
+              <Route path="/pembelian" children="Purchase"></Route>
+              <Route path="/penjualan" children="Sale"></Route>
+              <Route path="/jurnal" children="General Journal"></Route>
+              <Route path="/bukbes" children="Ledger"></Route>
+              <Route children="Dashboard"></Route>
+            </Switch>
+          </Typography>
+          <IconButton onClick={handleSignOut} color="inherit">
+            <PowerSettingsNewIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        variant="permanent"
+        classes={{
+          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose)
+        }}
+        open={open}
+      >
+        <div className={classes.toolbarIcon}>
+          <IconButton onClick={handleDrawerClose}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </div>
+        <Divider />
+        <List>
+          <Route
+            exact
+            path="/"
+            children={({ match, history }) => {
+              return (
+                <ListItem
+                  button
+                  selected={match ? true : false}
+                  onClick={() => {
+                    history.push('/');
+                  }}
+                >
+                  <ListItemIcon>
+                    <DashboardIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Dashboard"></ListItemText>
+                </ListItem>
+              );
+            }}
+          ></Route>
+        </List>
+        <Divider />
+        <List>
+          <ListSubheader inset>Master</ListSubheader>
+          <Route
+            path="/produk"
+            children={({ match, history }) => {
+              return (
+                <ListItem
+                  button
+                  selected={match ? true : false}
+                  onClick={() => {
+                    history.push('/produk');
+                  }}
+                >
+                  <ListItemIcon>
+                    <AddToQueueIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Produk"></ListItemText>
+                </ListItem>
+              );
+            }}
+          ></Route>
+        </List>
+        <Divider />
+        <List>
+          <ListSubheader inset>Transaction</ListSubheader>
+          <Route
+            path="/pembelian"
+            children={({ match, history }) => {
+              return (
+                <ListItem
+                  button
+                  selected={match ? true : false}
+                  onClick={() => {
+                    history.push('/pembelian');
+                  }}
+                >
+                  <ListItemIcon>
+                    <ShoppingBasketIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Purchase"></ListItemText>
+                </ListItem>
+              );
+            }}
+          ></Route>
+          <Route
+            path="/penjualan"
+            children={({ match, history }) => {
+              return (
+                <ListItem
+                  button
+                  selected={match ? true : false}
+                  onClick={() => {
+                    history.push('/penjualan');
+                  }}
+                >
+                  <ListItemIcon>
+                    <StoreIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Sale"></ListItemText>
+                </ListItem>
+              );
+            }}
+          ></Route>
+        </List>
+        <Divider />
+        <List>
+          <ListSubheader inset>Report</ListSubheader>
+          <Route
+            path="/jurnal"
+            children={({ match, history }) => {
+              return (
+                <ListItem
+                  button
+                  selected={match ? true : false}
+                  onClick={() => {
+                    history.push('/jurnal');
+                  }}
+                >
+                  <ListItemIcon>
+                    <AssignmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="General Journal"></ListItemText>
+                </ListItem>
+              );
+            }}
+          ></Route>
+          <Route
+            path="/bukbes"
+            children={({ match, history }) => {
+              return (
+                <ListItem
+                  button
+                  selected={match ? true : false}
+                  onClick={() => {
+                    history.push('/bukbes');
+                  }}
+                >
+                  <ListItemIcon>
+                    <BookIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Ledger"></ListItemText>
+                </ListItem>
+              );
+            }}
+          ></Route>
+        </List>
+        <Divider />
+      </Drawer>
+      <main className={classes.content}>
+        <div className={classes.appBarSpacer} />
+        <Container maxWidth="lg" className={classes.container}>
+          <Switch>
+            <Route path="/produk" component={Produk}></Route>
+            <Route path="/pembelian" component={Pembelian}></Route>
+            <Route path="/penjualan" component={Penjualan}></Route>
+            <Route path="/jurnal" component={Jurnal}></Route>
+            <Route path="/bukbes" component={Bukbes}></Route>
+            <Route component={Beranda}></Route>
+          </Switch>
+          <Box pt={9}>
+            <Copyright />
+          </Box>
+        </Container>
+      </main>
+    </div>
+  );
 }

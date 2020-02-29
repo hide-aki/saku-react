@@ -112,12 +112,7 @@ function Login(props) {
         <Typography component="h1" variant="h5">
           Sign In
         </Typography>
-        <form
-          autoComplete="off"
-          onSubmit={handleSubmit}
-          className={classes.form}
-          noValidate
-        >
+        <form onSubmit={handleSubmit} className={classes.form} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -133,7 +128,7 @@ function Login(props) {
                 id="username"
                 label="Username"
                 name="username"
-                autoComplete="username"
+                autoComplete="off"
               />
             </Grid>
             <Grid item xs={12}>
