@@ -4,6 +4,31 @@
 const Produk = require('../models/produk');
 
 /**
+ * @description make unicue product code
+ * @callback none
+ * @param req menangkap values dari form (berupa json)
+ * @param res return dari server ke client
+ * @param next middleware express
+ */
+exports.createCode = async (req, res, next) => {
+  try {
+    const getCodeproduct = await Produk.findAll({
+      attributes: ['id_produk'],
+      limit: 1,
+      order: [
+        ['id_produk', 'DESC']
+      ]
+    });
+    const convertToJson = JSON.stringify(getCodeproduct);
+    const parseJson = JSON.parse(convertToJson);
+    const result = Object.assign({}, parseJson);
+    console.log(result);
+  } catch (e) {
+
+  }
+}
+
+/**
  * @description Get all produk
  * @callback GET /api/v1/produk
  * @param req menangkap values dari form (berupa json)

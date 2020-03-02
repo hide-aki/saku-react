@@ -18,11 +18,14 @@ const passport = require('passport');
  * @param passport mengautentikasi jwt token
  */
 const {
+  createCode,
   getProduk,
   AddProduk,
   UpdateProduk,
   deleteProduk
 } = require('../controllers/produk');
+
+router.route('/code').get(createCode);
 
 router
   .route('/')
