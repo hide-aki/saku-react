@@ -14,10 +14,9 @@ const { connection } = require('../config/database');
 const Produk = connection.define(
   'produk',
   {
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
+    id_produk: {
+      type: Sequelize.STRING,
+      primaryKey: true
     },
     nama: { type: Sequelize.STRING },
     harga: { type: Sequelize.INTEGER },
