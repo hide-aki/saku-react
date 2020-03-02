@@ -3,7 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 
 //komponen pembelian
 import ShowPembelian from './table/showPembelian';
-import AddPembelian from './add/add';
+import AddPembelian from './add';
 
 function Pembelian() {
   return (

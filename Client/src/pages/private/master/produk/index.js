@@ -161,6 +161,7 @@ function Produk() {
       }
     }
     getData();
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trigger]);
 
   return (
@@ -205,42 +206,42 @@ function Produk() {
       ></MaterialTable>
 
       {//conditional rendering jika openedit true
-      open && (
-        <FormDialogAdd
-          config={config}
-          open={open}
-          handleClose={() => {
-            setOpen(false);
-          }}
-          handleCloseWithAction={() => {
-            setOpen(false);
-            if (trigger === '') {
-              setTrigger('AddData');
-            } else {
-              setTrigger('');
-            }
-          }}
-        ></FormDialogAdd>
-      )}
+        open && (
+          <FormDialogAdd
+            config={config}
+            open={open}
+            handleClose={() => {
+              setOpen(false);
+            }}
+            handleCloseWithAction={() => {
+              setOpen(false);
+              if (trigger === '') {
+                setTrigger('AddData');
+              } else {
+                setTrigger('');
+              }
+            }}
+          ></FormDialogAdd>
+        )}
       {//conditional rendering jika openedit true
-      openEdit && (
-        <FormDialogUpdate
-          config={config}
-          previousData={previousData}
-          openEdit={openEdit}
-          handleClose={() => {
-            setOpenEdit(false);
-          }}
-          handleCloseWithAction={() => {
-            setOpenEdit(false);
-            if (trigger === '') {
-              setTrigger('UpdateData');
-            } else {
-              setTrigger('');
-            }
-          }}
-        ></FormDialogUpdate>
-      )}
+        openEdit && (
+          <FormDialogUpdate
+            config={config}
+            previousData={previousData}
+            openEdit={openEdit}
+            handleClose={() => {
+              setOpenEdit(false);
+            }}
+            handleCloseWithAction={() => {
+              setOpenEdit(false);
+              if (trigger === '') {
+                setTrigger('UpdateData');
+              } else {
+                setTrigger('');
+              }
+            }}
+          ></FormDialogUpdate>
+        )}
     </>
   );
 }
