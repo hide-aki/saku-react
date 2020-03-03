@@ -1,18 +1,18 @@
 /**
  * @requires import sequelize
  */
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 
 /**
  * @implements import database yang sudah diinisiasi
  */
-const { connection } = require('../config/database');
+const { connection } = require("../config/database");
 
 /**
  * @module buat schema produk model
  */
 const Produk = connection.define(
-  'produk',
+  "produk",
   {
     id_produk: {
       type: Sequelize.STRING,

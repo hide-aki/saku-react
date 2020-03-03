@@ -1,7 +1,7 @@
 /**
  * @requires model schema
  */
-const Produk = require('../models/produk');
+const Produk = require("../models/produk");
 
 /**
  * @description make unicue product code
@@ -10,23 +10,42 @@ const Produk = require('../models/produk');
  * @param res return dari server ke client
  * @param next middleware express
  */
-exports.createCode = async (req, res, next) => {
+const createCode = async () => {
   try {
     const getCodeproduct = await Produk.findAll({
-      attributes: ['id_produk'],
+      raw: true,
+      attributes: ["id_produk"],
       limit: 1,
-      order: [
-        ['id_produk', 'DESC']
-      ]
+      order: [["id_produk", "DESC"]]
     });
-    const convertToJson = JSON.stringify(getCodeproduct);
-    const parseJson = JSON.parse(convertToJson);
-    const result = Object.assign({}, parseJson);
-    console.log(result);
+    let createCode = "";
+    const result = getCodeproduct;
+    if (result.length >= 1) {
+      const code = result[0].id_produk;
+      const sliceString = code.substr(3, 6);
+      const toFloat = parseFloat(sliceString) + 1;
+      const toString = toFloat.toString();
+      if (toString.length === 1) {
+        createCode = `PRD00000${toFloat}`;
+      } else if (toString.length === 2) {
+        createCode = `PRD0000${toFloat}`;
+      } else if (toString.length === 3) {
+        createCode = `PRD000${toFloat}`;
+      } else if (toString.length === 4) {
+        createCode = `PRD00${toFloat}`;
+      } else if (toString.length === 5) {
+        createCode = `PRD0${toFloat}`;
+      } else if (toString.length === 6) {
+        createCode = `PRD${toFloat}`;
+      }
+    } else {
+      createCode = "PRD000001";
+    }
+    return createCode;
   } catch (e) {
-
+    res.status(501).json({ success: false, error: "Error database" });
   }
-}
+};
 
 /**
  * @description Get all produk
@@ -45,7 +64,7 @@ exports.getProduk = async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      error: 'Server dalam masalah'
+      error: "Server dalam masalah"
     });
   }
 };
@@ -59,8 +78,15 @@ exports.getProduk = async (req, res, next) => {
  */
 exports.AddProduk = async (req, res, next) => {
   try {
+    const productCode = await createCode();
     const { nama, harga, stok, deskripsi } = req.body;
-    const newProduk = new Produk({ nama, harga, stok, deskripsi });
+    const newProduk = new Produk({
+      id_produk: productCode,
+      nama,
+      harga,
+      stok,
+      deskripsi
+    });
     await newProduk.save();
     return res.status(201).json({
       success: true,
@@ -69,7 +95,7 @@ exports.AddProduk = async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      error: 'Server dalam masalah'
+      error: "Server dalam masalah"
     });
   }
 };
@@ -105,7 +131,7 @@ exports.UpdateProduk = async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      error: 'Server dalam masalah'
+      error: "Server dalam masalah"
     });
   }
 };
@@ -123,12 +149,12 @@ exports.deleteProduk = async (req, res, next) => {
     await Produk.destroy({ where: { id: id } });
     return res.status(202).json({
       success: true,
-      data: 'Produk berhasil dihapus'
+      data: "Produk berhasil dihapus"
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      error: 'Server dalam masalah'
+      error: "Server dalam masalah"
     });
   }
 };
