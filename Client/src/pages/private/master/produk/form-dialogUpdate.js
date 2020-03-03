@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import React, { useState } from "react";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
-import axios from 'axios';
+import axios from "axios";
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from "notistack";
 
-import useFormValidationMaster from '../../../../utils/hooks/useFormValidationMaster';
-import validateMasterProduk from '../../../../utils/validate/validateMasterProduk';
+import useFormValidationMaster from "../../../../utils/hooks/useFormValidationMaster";
+import validateMasterProduk from "../../../../utils/validate/validateMasterProduk";
 
 function FormDialogUpdate({
   config,
@@ -24,9 +24,9 @@ function FormDialogUpdate({
   handleCloseWithAction
 }) {
   const { enqueueSnackbar } = useSnackbar();
-  const [serverError, setServerError] = useState({ nama: '' });
+  const [serverError, setServerError] = useState({ nama: "" });
   const INITIAL_STATE = {
-    id: previousData.id,
+    id_produk: previousData.id_produk,
     nama: previousData.nama,
     harga: previousData.harga,
     stok: previousData.stok,
@@ -44,10 +44,10 @@ function FormDialogUpdate({
   );
 
   async function editProdukSubmit() {
-    const { id, nama, harga, stok, deskripsi } = values;
+    const { id_produk, nama, harga, stok, deskripsi } = values;
     try {
       const updateProduk = await axios.put(
-        `/api/v1/produk/${id}`,
+        `/api/v1/produk/${id_produk}`,
         {
           nama,
           harga,
@@ -58,19 +58,19 @@ function FormDialogUpdate({
       );
       if (updateProduk.status === 202) {
         handleCloseWithAction();
-        enqueueSnackbar(`Data produk ${id} berhasil diupdate`, {
-          variant: 'success'
+        enqueueSnackbar(`Data produk ${id_produk} berhasil diupdate`, {
+          variant: "success"
         });
       }
     } catch (error) {
       const code = error.message;
       const getCode = code.substr(32, 3);
-      if (getCode === '401') {
+      if (getCode === "401") {
         setServerError({
-          nama: 'User tidak terautentikasi, silahkan login kembali'
+          nama: "User tidak terautentikasi, silahkan login kembali"
         });
-      } else if (getCode === '500') {
-        setServerError({ nama: 'Server dalam masalah' });
+      } else if (getCode === "500") {
+        setServerError({ nama: "Server dalam masalah" });
       }
     }
   }

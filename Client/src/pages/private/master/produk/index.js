@@ -1,34 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 //material UI
-import { forwardRef } from 'react';
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowDownward from '@material-ui/icons/ArrowDownward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import Search from '@material-ui/icons/Search';
-import ViewColumn from '@material-ui/icons/ViewColumn';
+import { forwardRef } from "react";
+import AddBox from "@material-ui/icons/AddBox";
+import ArrowDownward from "@material-ui/icons/ArrowDownward";
+import Check from "@material-ui/icons/Check";
+import ChevronLeft from "@material-ui/icons/ChevronLeft";
+import ChevronRight from "@material-ui/icons/ChevronRight";
+import Clear from "@material-ui/icons/Clear";
+import DeleteOutline from "@material-ui/icons/DeleteOutline";
+import Edit from "@material-ui/icons/Edit";
+import FilterList from "@material-ui/icons/FilterList";
+import FirstPage from "@material-ui/icons/FirstPage";
+import LastPage from "@material-ui/icons/LastPage";
+import Remove from "@material-ui/icons/Remove";
+import SaveAlt from "@material-ui/icons/SaveAlt";
+import Search from "@material-ui/icons/Search";
+import ViewColumn from "@material-ui/icons/ViewColumn";
 
 //material-table
-import MaterialTable from 'material-table';
+import MaterialTable from "material-table";
 
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from "notistack";
 
 //import dialog
-import FormDialogAdd from './form-dialogAdd';
-import FormDialogUpdate from './form-dialogUpdate';
+import FormDialogAdd from "./form-dialogAdd";
+import FormDialogUpdate from "./form-dialogUpdate";
 
-import { numberFormat, removeFormat } from '../../../../utils/format/format';
+import { numberFormat, removeFormat } from "../../../../utils/format/format";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -56,38 +56,38 @@ const tableIcons = {
 
 const config = {
   headers: {
-    Authorization: `Bearer ${sessionStorage.getItem('key')}`,
-    'Content-type': 'application/json'
+    Authorization: `Bearer ${sessionStorage.getItem("key")}`,
+    "Content-type": "application/json"
   }
 };
 
 function Produk() {
   const [open, setOpen] = useState(false);
-  const [trigger, setTrigger] = useState('');
+  const [trigger, setTrigger] = useState("");
   const [isLoading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const [openEdit, setOpenEdit] = useState(false);
   const [previousData, setPreviousData] = useState({
-    id: '',
-    nama: '',
-    harga: '',
-    stok: '',
-    deskripsi: ''
+    id: "",
+    nama: "",
+    harga: "",
+    stok: "",
+    deskripsi: ""
   });
 
   const [table, setTable] = useState({
     columns: [
-      { title: 'Product Code', field: 'id' },
-      { title: 'Product Name', field: 'nama' },
-      { title: 'Price (Rp)', field: 'harga' },
-      { title: 'Stock', field: 'stok' },
-      { title: 'Description', field: 'deskripsi' }
+      { title: "Product Code", field: "id_produk" },
+      { title: "Product Name", field: "nama" },
+      { title: "Price (Rp)", field: "harga" },
+      { title: "Stock", field: "stok" },
+      { title: "Description", field: "deskripsi" }
     ],
     data: [],
     actions: [
       {
         icon: () => <AddBox />,
-        tooltip: 'Add Product',
+        tooltip: "Add Product",
         isFreeAction: true,
         onClick: () => {
           setOpen(true);
@@ -95,11 +95,11 @@ function Produk() {
       },
       {
         icon: () => <Edit />,
-        tooltip: 'Edit Product',
+        tooltip: "Edit Product",
         onClick: (event, rowData) => {
           setOpenEdit(true);
           setPreviousData({
-            id: rowData.id,
+            id_produk: rowData.id_produk,
             nama: rowData.nama,
             harga: removeFormat(rowData.harga),
             stok: removeFormat(rowData.stok),
@@ -110,7 +110,7 @@ function Produk() {
     ],
     localization: {
       header: {
-        actions: 'Actions'
+        actions: "Actions"
       }
     }
   });
@@ -118,9 +118,9 @@ function Produk() {
     setLoading(true);
     async function getData() {
       try {
-        const res = await axios.get('/api/v1/produk', {
+        const res = await axios.get("/api/v1/produk", {
           headers: {
-            Authorization: `Bearer ${sessionStorage.getItem('key')}`
+            Authorization: `Bearer ${sessionStorage.getItem("key")}`
           }
         });
         if (res.data.data.length > 0) {
@@ -129,7 +129,7 @@ function Produk() {
               ...table,
               data: res.data.data.map(produk => {
                 return {
-                  id: produk.id,
+                  id_produk: produk.id_produk,
                   nama: produk.nama,
                   harga: numberFormat(produk.harga),
                   stok: numberFormat(produk.stok),
@@ -151,12 +151,12 @@ function Produk() {
         setLoading(false);
         const code = error.message;
         const getCode = code.substr(32, 3);
-        if (getCode === '401') {
-          enqueueSnackbar('User tidak terautentikasi, silahkan login kembali', {
-            variant: 'error'
+        if (getCode === "401") {
+          enqueueSnackbar("User tidak terautentikasi, silahkan login kembali", {
+            variant: "error"
           });
-        } else if (getCode === '500') {
-          enqueueSnackbar('Server dalam masalah', { variant: 'error' });
+        } else if (getCode === "500") {
+          enqueueSnackbar("Server dalam masalah", { variant: "error" });
         }
       }
     }
@@ -178,27 +178,31 @@ function Produk() {
           onRowDelete: async oldData => {
             try {
               const deleteProduk = await axios.delete(
-                `/api/v1/produk/${oldData.id}`,
-                config
+                `/api/v1/produk/${oldData.id_produk}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("key")}`
+                  }
+                }
               );
               if (deleteProduk.status === 202) {
-                enqueueSnackbar(deleteProduk.data.data, { variant: 'success' });
-                if (trigger === '') {
-                  setTrigger('DeleteData');
+                enqueueSnackbar(deleteProduk.data.data, { variant: "success" });
+                if (trigger === "") {
+                  setTrigger("DeleteData");
                 } else {
-                  setTrigger('');
+                  setTrigger("");
                 }
               }
             } catch (error) {
               const code = error.message;
               const getCode = code.substr(32, 3);
-              if (getCode === '401') {
+              if (getCode === "401") {
                 enqueueSnackbar(
-                  'User tidak terautentikasi, silahkan login kembali',
-                  { variant: 'error' }
+                  "User tidak terautentikasi, silahkan login kembali",
+                  { variant: "error" }
                 );
-              } else if (getCode === '500') {
-                enqueueSnackbar('Server dalam masalah', { variant: 'error' });
+              } else if (getCode === "500") {
+                enqueueSnackbar("Server dalam masalah", { variant: "error" });
               }
             }
           }
@@ -206,42 +210,42 @@ function Produk() {
       ></MaterialTable>
 
       {//conditional rendering jika openedit true
-        open && (
-          <FormDialogAdd
-            config={config}
-            open={open}
-            handleClose={() => {
-              setOpen(false);
-            }}
-            handleCloseWithAction={() => {
-              setOpen(false);
-              if (trigger === '') {
-                setTrigger('AddData');
-              } else {
-                setTrigger('');
-              }
-            }}
-          ></FormDialogAdd>
-        )}
+      open && (
+        <FormDialogAdd
+          config={config}
+          open={open}
+          handleClose={() => {
+            setOpen(false);
+          }}
+          handleCloseWithAction={() => {
+            setOpen(false);
+            if (trigger === "") {
+              setTrigger("AddData");
+            } else {
+              setTrigger("");
+            }
+          }}
+        ></FormDialogAdd>
+      )}
       {//conditional rendering jika openedit true
-        openEdit && (
-          <FormDialogUpdate
-            config={config}
-            previousData={previousData}
-            openEdit={openEdit}
-            handleClose={() => {
-              setOpenEdit(false);
-            }}
-            handleCloseWithAction={() => {
-              setOpenEdit(false);
-              if (trigger === '') {
-                setTrigger('UpdateData');
-              } else {
-                setTrigger('');
-              }
-            }}
-          ></FormDialogUpdate>
-        )}
+      openEdit && (
+        <FormDialogUpdate
+          config={config}
+          previousData={previousData}
+          openEdit={openEdit}
+          handleClose={() => {
+            setOpenEdit(false);
+          }}
+          handleCloseWithAction={() => {
+            setOpenEdit(false);
+            if (trigger === "") {
+              setTrigger("UpdateData");
+            } else {
+              setTrigger("");
+            }
+          }}
+        ></FormDialogUpdate>
+      )}
     </>
   );
 }

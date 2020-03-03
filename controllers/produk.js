@@ -120,7 +120,7 @@ exports.UpdateProduk = async (req, res, next) => {
       },
       {
         where: {
-          id: id
+          id_produk: id
         }
       }
     );
@@ -146,7 +146,7 @@ exports.UpdateProduk = async (req, res, next) => {
 exports.deleteProduk = async (req, res, next) => {
   try {
     const id = req.params.id;
-    await Produk.destroy({ where: { id: id } });
+    await Produk.destroy({ where: { id_produk: id } });
     return res.status(202).json({
       success: true,
       data: "Produk berhasil dihapus"
