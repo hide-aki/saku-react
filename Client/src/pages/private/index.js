@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, lazy, Suspense } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import clsx from 'clsx';
 import Drawer from '@material-ui/core/Drawer';
@@ -27,16 +27,19 @@ import BookIcon from '@material-ui/icons/Book';
 import useStyles from './styles';
 import Copyright from '../copyright';
 
-//import private pages
-import Beranda from '../private/beranda';
-import Produk from '../private/master/produk';
-import Penjualan from '../private/transaksi/penjualan';
-import Pembelian from '../private/transaksi/pembelian';
-import Jurnal from '../private/laporan/jurnal';
-import Bukbes from '../private/laporan/bukubesar';
-
 //user Context
 import { UserContext } from '../../config/UserContext';
+
+//loading page
+import ContentLoading from '../appLoading/contentLoading';
+
+//import private pages
+const Beranda = lazy(() => import('../private/beranda'));
+const Produk = lazy(() => import('../private/master/produk'));
+const Penjualan = lazy(() => import('../private/transaksi/penjualan'));
+const Pembelian = lazy(() => import('../private/transaksi/pembelian'));
+const Jurnal = lazy(() => import('../private/laporan/jurnal'));
+const Bukbes = lazy(() => import('../private/laporan/bukubesar'));
 
 export default function Private() {
   const { setUser } = useContext(UserContext);
@@ -244,14 +247,16 @@ export default function Private() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Switch>
-            <Route path="/produk" component={Produk}></Route>
-            <Route path="/pembelian" component={Pembelian}></Route>
-            <Route path="/penjualan" component={Penjualan}></Route>
-            <Route path="/jurnal" component={Jurnal}></Route>
-            <Route path="/bukbes" component={Bukbes}></Route>
-            <Route component={Beranda}></Route>
-          </Switch>
+          <Suspense fallback={<ContentLoading></ContentLoading>}>
+            <Switch>
+              <Route path="/produk" component={Produk}></Route>
+              <Route path="/pembelian" component={Pembelian}></Route>
+              <Route path="/penjualan" component={Penjualan}></Route>
+              <Route path="/jurnal" component={Jurnal}></Route>
+              <Route path="/bukbes" component={Bukbes}></Route>
+              <Route component={Beranda}></Route>
+            </Switch>
+          </Suspense>
           <Box pt={9}>
             <Copyright />
           </Box>

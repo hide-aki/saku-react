@@ -1,12 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
-//pages component
-import registrasi from './pages/register';
-import login from './pages/login';
-import notfound from './pages/404';
-import Private from './pages/private';
-import PrivateRoute from './config/PrivateRoute';
 
 //Material UI
 import ThemeProvider from '@material-ui/styles/ThemeProvider';
@@ -20,22 +13,17 @@ import AppLoading from './pages/appLoading/appLoading';
 //user context
 import { UserContext } from './config/UserContext';
 
-function App() {
-  const [isLoading, setLoading] = useState(true);
+//pages component
+import PrivateRoute from './config/PrivateRoute';
+const Login = lazy(() => import('./pages/login'));
+const Register = lazy(() => import('./pages/register'));
+const NotFound = lazy(() => import('./pages/404'));
+const Private = lazy(() => import('./pages/private'));
 
-  const [user, setUser] = useState(sessionStorage.getItem('id'))
+function App() {
+  const [user, setUser] = useState(sessionStorage.getItem('id'));
 
   const providerUser = useMemo(() => ({ user, setUser }), [user, setUser]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false)
-    }, 600)
-  }, [])
-
-  if (isLoading) {
-    return (<AppLoading></AppLoading>)
-  }
 
   return (
     <>
@@ -44,17 +32,38 @@ function App() {
         <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
           <UserContext.Provider value={providerUser}>
             <Router>
-              <Switch>
-                <PrivateRoute exact path="/" component={Private}></PrivateRoute>
-                <PrivateRoute path="/pembelian" component={Private}></PrivateRoute>
-                <PrivateRoute path="/penjualan" component={Private}></PrivateRoute>
-                <PrivateRoute path="/produk" component={Private}></PrivateRoute>
-                <PrivateRoute path="/jurnal" component={Private}></PrivateRoute>
-                <PrivateRoute path="/bukbes" component={Private}></PrivateRoute>
-                <Route path="/register" component={registrasi}></Route>
-                <Route path="/login" component={login}></Route>
-                <Route component={notfound}></Route>
-              </Switch>
+              <Suspense fallback={<AppLoading></AppLoading>}>
+                <Switch>
+                  <PrivateRoute
+                    exact
+                    path="/"
+                    component={Private}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    path="/pembelian"
+                    component={Private}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    path="/penjualan"
+                    component={Private}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    path="/produk"
+                    component={Private}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    path="/jurnal"
+                    component={Private}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    path="/bukbes"
+                    component={Private}
+                  ></PrivateRoute>
+                  <Route path="/register" component={Register}></Route>
+                  <Route path="/login" component={Login}></Route>
+                  <Route component={NotFound}></Route>
+                </Switch>
+              </Suspense>
             </Router>
           </UserContext.Provider>
         </SnackbarProvider>
