@@ -20,14 +20,14 @@ function AddPembelian() {
       <PurchaseProvider>
         <Grid container spacing={3}>
           <Suspense fallback={<ContentLoading></ContentLoading>}>
-            <Grid item xs={6}>
+            <Grid item xs={7}>
               <Paper>
                 <HeaderShow />
                 <Balance />
                 <PurchaseTable />
               </Paper>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={5}>
               <Paper>
                 <HeaderForm />
                 <FormComponent />
