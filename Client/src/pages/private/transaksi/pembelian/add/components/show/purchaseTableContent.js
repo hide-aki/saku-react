@@ -18,7 +18,11 @@ import useStyles from "../../styles";
 
 function PurchaseTableContent({ purchase }) {
   const classes = useStyles();
-  const { deletePurchase } = useContext(PurchaseContext);
+  const { deletePurchase, updatePurchase } = useContext(PurchaseContext);
+
+  function increase(purchase) {
+    updatePurchase(purchase.id_produk, Number(purchase.qty) + 1);
+  }
 
   return (
     <TableRow key={purchase.id_produk}>
@@ -36,12 +40,19 @@ function PurchaseTableContent({ purchase }) {
       <TableCell align="left">{numberFormat(purchase.harga)}</TableCell>
       <TableCell align="center">
         <Tooltip title="Increase">
-          <IconButton className={classes.upIconButton} size="small">
+          <IconButton
+            className={classes.upIconButton}
+            size="small"
+            onClick={() => increase(purchase)}
+          >
             <KeyboardArrowUpIcon size={20} className={classes.upIcon} />
           </IconButton>
         </Tooltip>
         <TextField
-          inputProps={{ readOnly: true, style: { textAlign: "center" } }}
+          inputProps={{
+            readOnly: true,
+            style: { textAlign: "center" }
+          }}
           className={classes.textFieldQty}
           value={purchase.qty}
         />

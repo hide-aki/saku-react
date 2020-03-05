@@ -27,12 +27,21 @@ export const PurchaseProvider = ({ children }) => {
     });
   }
 
+  function updatePurchase(id_produk, qty) {
+    dispatch({
+      type: "UPDATE_PURCHASE",
+      id_produk,
+      qty
+    });
+  }
+
   return (
     <PurchaseContext.Provider
       value={{
         purchase: state.purchase,
         deletePurchase,
-        addPurchase
+        addPurchase,
+        updatePurchase
       }}
     >
       {children}
