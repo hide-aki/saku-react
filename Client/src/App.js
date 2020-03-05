@@ -1,27 +1,27 @@
-import React, { useState, useEffect, useMemo, Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import React, { useState, useEffect, useMemo, Suspense, lazy } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 //Material UI
-import ThemeProvider from '@material-ui/styles/ThemeProvider';
-import Theme from './config/Theme';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { SnackbarProvider } from 'notistack';
+import ThemeProvider from "@material-ui/styles/ThemeProvider";
+import Theme from "./config/Theme";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { SnackbarProvider } from "notistack";
 
 //loading page
-import AppLoading from './pages/appLoading/appLoading';
+import AppLoading from "./pages/appLoading/appLoading";
 
 //user context
-import { UserContext } from './config/UserContext';
+import { UserContext } from "./config/UserContext";
 
 //pages component
-import PrivateRoute from './config/PrivateRoute';
-const Login = lazy(() => import('./pages/login'));
-const Register = lazy(() => import('./pages/register'));
-const NotFound = lazy(() => import('./pages/404'));
-const Private = lazy(() => import('./pages/private'));
+import PrivateRoute from "./config/PrivateRoute";
+const Login = lazy(() => import("./pages/login"));
+const Register = lazy(() => import("./pages/register"));
+const NotFound = lazy(() => import("./pages/404"));
+const Private = lazy(() => import("./pages/private"));
 
 function App() {
-  const [user, setUser] = useState(sessionStorage.getItem('id'));
+  const [user, setUser] = useState(sessionStorage.getItem("id"));
 
   const providerUser = useMemo(() => ({ user, setUser }), [user, setUser]);
 
@@ -51,6 +51,7 @@ function App() {
                     path="/produk"
                     component={Private}
                   ></PrivateRoute>
+                  <PrivateRoute path="/coa" component={Private}></PrivateRoute>
                   <PrivateRoute
                     path="/jurnal"
                     component={Private}

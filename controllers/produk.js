@@ -76,7 +76,7 @@ exports.getProduk = async (req, res, next) => {
  * @param res return dari server ke client
  * @param next middleware express
  */
-exports.AddProduk = async (req, res, next) => {
+exports.addProduk = async (req, res, next) => {
   try {
     const productCode = await createCode();
     const { nama, harga, stok, deskripsi } = req.body;
@@ -107,7 +107,7 @@ exports.AddProduk = async (req, res, next) => {
  * @param res return dari server ke client
  * @param next middleware express
  */
-exports.UpdateProduk = async (req, res, next) => {
+exports.updateProduk = async (req, res, next) => {
   try {
     const { nama, harga, stok, deskripsi } = req.body;
     const id = req.params.id;

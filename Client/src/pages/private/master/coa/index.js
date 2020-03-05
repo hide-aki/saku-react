@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
 //material UI
 import { forwardRef } from "react";
 import AddBox from "@material-ui/icons/AddBox";
@@ -20,13 +19,11 @@ import Search from "@material-ui/icons/Search";
 //material-table
 import MaterialTable from "material-table";
 
+//import Dialog
+import AddDialog from "./form-dialogAdd";
+import EditDialog from "./form-dialogEdit";
+
 import { useSnackbar } from "notistack";
-
-//import dialog
-import FormDialogAdd from "./form-dialogAdd";
-import FormDialogUpdate from "./form-dialogUpdate";
-
-import { numberFormat, removeFormat } from "../../../../utils/format/format";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -57,66 +54,47 @@ const config = {
   }
 };
 
-function Produk() {
-  const [open, setOpen] = useState(false);
+function Coa() {
+  const { enqueueSnackbar } = useSnackbar();
   const [trigger, setTrigger] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
+  const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [previousData, setPreviousData] = useState({
-    id: "",
-    nama: "",
-    harga: "",
-    stok: "",
-    deskripsi: ""
+    no_coa: "",
+    nama: ""
   });
-
   const [table, setTable] = useState({
     columns: [
-      { title: "Product Code", field: "id_produk" },
-      { title: "Product Name", field: "nama" },
-      { title: "Purchase Price (Rp)", field: "harga_beli" },
-      { title: "Selling Price (Rp)", field: "harga_jual" },
-      { title: "Stock", field: "stok" },
-      { title: "Description", field: "deskripsi" }
+      { title: "Coa Number", field: "no_coa" },
+      { title: "Coa Name", field: "nama" }
     ],
     data: [],
     actions: [
       {
         icon: () => <AddBox />,
-        tooltip: "Add Product",
+        tooltip: "Add Coa",
         isFreeAction: true,
-        onClick: () => {
-          setOpen(true);
-        }
+        onClick: () => setOpen(true)
       },
       {
         icon: () => <Edit />,
-        tooltip: "Edit Product",
+        tooltip: "Edit COA",
         onClick: (event, rowData) => {
           setOpenEdit(true);
           setPreviousData({
-            id_produk: rowData.id_produk,
-            nama: rowData.nama,
-            harga_beli: removeFormat(rowData.harga_beli),
-            harga_jual: removeFormat(rowData.harga_jual),
-            stok: removeFormat(rowData.stok),
-            deskripsi: rowData.deskripsi
+            no_coa: rowData.no_coa,
+            nama: rowData.nama
           });
         }
       }
-    ],
-    localization: {
-      header: {
-        actions: "Actions"
-      }
-    }
+    ]
   });
   useEffect(() => {
     setLoading(true);
     async function getData() {
       try {
-        const res = await axios.get("/api/v1/produk", {
+        const res = await axios.get("/api/v1/coa", {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("key")}`
           }
@@ -125,14 +103,10 @@ function Produk() {
           setTable(table => {
             return {
               ...table,
-              data: res.data.data.map(produk => {
+              data: res.data.data.map(coa => {
                 return {
-                  id_produk: produk.id_produk,
-                  nama: produk.nama,
-                  harga_jual: numberFormat(produk.harga_jual),
-                  harga_beli: numberFormat(produk.harga_beli),
-                  stok: numberFormat(produk.stok),
-                  deskripsi: produk.deskripsi
+                  no_coa: coa.no_coa,
+                  nama: coa.nama
                 };
               })
             };
@@ -162,60 +136,21 @@ function Produk() {
     getData();
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trigger]);
-
   return (
     <>
       <MaterialTable
         isLoading={isLoading}
-        title="Product Table"
+        title="COA Table"
         icons={tableIcons}
         columns={table.columns}
         data={table.data}
         actions={table.actions}
-        localization={table.localization}
-        editable={{
-          onRowDelete: async oldData => {
-            try {
-              const deleteProduk = await axios.delete(
-                `/api/v1/produk/${oldData.id_produk}`,
-                {
-                  headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem("key")}`
-                  }
-                }
-              );
-              if (deleteProduk.status === 202) {
-                enqueueSnackbar(deleteProduk.data.data, { variant: "success" });
-                if (trigger === "") {
-                  setTrigger("DeleteData");
-                } else {
-                  setTrigger("");
-                }
-              }
-            } catch (error) {
-              const code = error.message;
-              const getCode = code.substr(32, 3);
-              if (getCode === "401") {
-                enqueueSnackbar(
-                  "User tidak terautentikasi, silahkan login kembali",
-                  { variant: "error" }
-                );
-              } else if (getCode === "500") {
-                enqueueSnackbar("Server dalam masalah", { variant: "error" });
-              }
-            }
-          }
-        }}
-      ></MaterialTable>
-
-      {//conditional rendering jika open true
-      open && (
-        <FormDialogAdd
+      />
+      {open && (
+        <AddDialog
           config={config}
           open={open}
-          handleClose={() => {
-            setOpen(false);
-          }}
+          handleClose={() => setOpen(false)}
           handleCloseWithAction={() => {
             setOpen(false);
             if (trigger === "") {
@@ -224,29 +159,26 @@ function Produk() {
               setTrigger("");
             }
           }}
-        ></FormDialogAdd>
+        ></AddDialog>
       )}
-      {//conditional rendering jika openedit true
-      openEdit && (
-        <FormDialogUpdate
+      {openEdit && (
+        <EditDialog
           config={config}
-          previousData={previousData}
-          openEdit={openEdit}
-          handleClose={() => {
-            setOpenEdit(false);
-          }}
+          open={openEdit}
+          handleClose={() => setOpenEdit(false)}
           handleCloseWithAction={() => {
             setOpenEdit(false);
             if (trigger === "") {
-              setTrigger("UpdateData");
+              setTrigger("EditData");
             } else {
               setTrigger("");
             }
           }}
-        ></FormDialogUpdate>
+          previousData={previousData}
+        ></EditDialog>
       )}
     </>
   );
 }
 
-export default Produk;
+export default Coa;

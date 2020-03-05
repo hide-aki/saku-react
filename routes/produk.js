@@ -19,19 +19,19 @@ const passport = require("passport");
  */
 const {
   getProduk,
-  AddProduk,
-  UpdateProduk,
+  addProduk,
+  updateProduk,
   deleteProduk
 } = require("../controllers/produk");
 
 router
   .route("/")
   .get(passport.authenticate("jwt", { session: false }), getProduk)
-  .post(passport.authenticate("jwt", { session: false }), AddProduk);
+  .post(passport.authenticate("jwt", { session: false }), addProduk);
 
 router
   .route("/:id")
-  .put(passport.authenticate("jwt", { session: false }), UpdateProduk)
+  .put(passport.authenticate("jwt", { session: false }), updateProduk)
   .delete(passport.authenticate("jwt", { session: false }), deleteProduk);
 
 module.exports = router;

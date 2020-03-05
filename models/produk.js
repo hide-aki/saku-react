@@ -19,7 +19,8 @@ const Produk = connection.define(
       primaryKey: true
     },
     nama: { type: Sequelize.STRING },
-    harga: { type: Sequelize.INTEGER },
+    harga_jual: { type: Sequelize.INTEGER },
+    harga_beli: { type: Sequelize.INTEGER },
     stok: { type: Sequelize.INTEGER },
     deskripsi: { type: Sequelize.STRING }
   },

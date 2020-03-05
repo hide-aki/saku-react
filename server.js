@@ -77,6 +77,7 @@ app.listen(
  * @public router login
  * @private router produk
  * @private router pembelian
+ * @private router coa
  */
 const registrasi = require("./routes/register");
 app.use("/api/v1/register", registrasi);
@@ -86,3 +87,5 @@ const produk = require("./routes/produk");
 app.use("/api/v1/produk", produk);
 const pembelian = require("./routes/pembelian");
 app.use("/api/v1/pembelian", pembelian);
+const coa = require("./routes/coa");
+app.use("/api/v1/coa", coa);
