@@ -13,6 +13,8 @@ import PropTypes from "prop-types";
 
 import { useSnackbar } from "notistack";
 
+import useStyles from "./styles";
+
 import useFormValidationMaster from "../../../../utils/hooks/useFormValidationMaster";
 import validateMasterProduk from "../../../../utils/validate/validateMasterProduk";
 
@@ -23,12 +25,14 @@ function FormDialogUpdate({
   handleClose,
   handleCloseWithAction
 }) {
+  const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [serverError, setServerError] = useState({ nama: "" });
   const INITIAL_STATE = {
     id_produk: previousData.id_produk,
     nama: previousData.nama,
-    harga: previousData.harga,
+    harga_jual: previousData.harga_jual,
+    harga_beli: previousData.harga_beli,
     stok: previousData.stok,
     deskripsi: previousData.deskripsi
   };
@@ -77,6 +81,7 @@ function FormDialogUpdate({
 
   return (
     <Dialog
+      className={classes.dialogForm}
       open={openEdit}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
@@ -99,14 +104,25 @@ function FormDialogUpdate({
             fullWidth
           />
           <TextField
-            helperText={errors.harga}
-            error={errors.harga ? true : false}
+            helperText={errors.harga_beli}
+            error={errors.harga_beli ? true : false}
             onChange={handleChange}
-            value={values.harga}
+            value={values.harga_beli}
             margin="dense"
-            id="harga"
-            name="harga"
-            label="Price"
+            id="harga_beli"
+            name="harga_beli"
+            label="Purchase Price"
+            fullWidth
+          />
+          <TextField
+            helperText={errors.harga_jual}
+            error={errors.harga_jual ? true : false}
+            onChange={handleChange}
+            value={values.harga_jual}
+            margin="dense"
+            id="harga_jual"
+            name="harga_jual"
+            label="Selling Price"
             fullWidth
           />
           <TextField

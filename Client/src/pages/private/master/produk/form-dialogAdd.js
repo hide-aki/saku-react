@@ -1,30 +1,34 @@
-import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import React, { useState } from "react";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
-import axios from 'axios';
+import axios from "axios";
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from "notistack";
+
+import useStyles from "./styles";
 
 //custom hooks
-import useFormValidationMaster from '../../../../utils/hooks/useFormValidationMaster';
-import validateMasterProduk from '../../../../utils/validate/validateMasterProduk';
+import useFormValidationMaster from "../../../../utils/hooks/useFormValidationMaster";
+import validateMasterProduk from "../../../../utils/validate/validateMasterProduk";
 
 const INITIAL_STATE = {
-  nama: '',
-  harga: '',
-  stok: '',
-  deskripsi: ''
+  nama: "",
+  harga_jual: "",
+  harga_beli: "",
+  stok: "",
+  deskripsi: ""
 };
 
 function FormDialogAdd({ config, open, handleClose, handleCloseWithAction }) {
+  const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const {
     values,
@@ -37,15 +41,16 @@ function FormDialogAdd({ config, open, handleClose, handleCloseWithAction }) {
     validateMasterProduk,
     addProdukSubmit
   );
-  const [serverError, setServerError] = useState({ nama: '' });
+  const [serverError, setServerError] = useState({ nama: "" });
   async function addProdukSubmit() {
-    const { nama, harga, stok, deskripsi } = values;
+    const { nama, harga_jual, harga_beli, stok, deskripsi } = values;
     try {
       const postProduk = await axios.post(
-        '/api/v1/produk',
+        "/api/v1/produk",
         {
           nama,
-          harga,
+          harga_jual,
+          harga_beli,
           stok,
           deskripsi
         },
@@ -53,23 +58,24 @@ function FormDialogAdd({ config, open, handleClose, handleCloseWithAction }) {
       );
       if (postProduk.status === 201) {
         handleCloseWithAction();
-        enqueueSnackbar(postProduk.data.data, { variant: 'success' });
+        enqueueSnackbar(postProduk.data.data, { variant: "success" });
       }
     } catch (e) {
       const code = e.message;
       const getCode = code.substr(32, 3);
-      if (getCode === '401') {
+      if (getCode === "401") {
         setServerError({
-          nama: 'User tidak terautentikasi, silahkan login kembali'
+          nama: "User tidak terautentikasi, silahkan login kembali"
         });
-      } else if (getCode === '500') {
-        setServerError({ nama: 'Server dalam masalah' });
+      } else if (getCode === "500") {
+        setServerError({ nama: "Server dalam masalah" });
       }
     }
   }
 
   return (
     <Dialog
+      className={classes.dialogForm}
       open={open}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
@@ -95,14 +101,26 @@ function FormDialogAdd({ config, open, handleClose, handleCloseWithAction }) {
           />
           <TextField
             disabled={isSubmitting}
-            error={errors.harga ? true : false}
-            helperText={errors.harga}
+            error={errors.harga_beli ? true : false}
+            helperText={errors.harga_beli}
             onChange={handleChange}
-            value={values.harga}
+            value={values.harga_beli}
             margin="dense"
-            id="harga"
-            name="harga"
-            label="Price"
+            id="harga_beli"
+            name="harga_beli"
+            label="Purchase Price"
+            fullWidth
+          />
+          <TextField
+            disabled={isSubmitting}
+            error={errors.harga_jual ? true : false}
+            helperText={errors.harga_jual}
+            onChange={handleChange}
+            value={values.harga_jual}
+            margin="dense"
+            id="harga_jual"
+            name="harga_jual"
+            label="Selling Price"
             fullWidth
           />
           <TextField
