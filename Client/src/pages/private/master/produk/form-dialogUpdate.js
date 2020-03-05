@@ -48,13 +48,14 @@ function FormDialogUpdate({
   );
 
   async function editProdukSubmit() {
-    const { id_produk, nama, harga, stok, deskripsi } = values;
+    const { id_produk, nama, harga_jual, harga_beli, stok, deskripsi } = values;
     try {
       const updateProduk = await axios.put(
         `/api/v1/produk/${id_produk}`,
         {
           nama,
-          harga,
+          harga_jual,
+          harga_beli,
           stok,
           deskripsi
         },
