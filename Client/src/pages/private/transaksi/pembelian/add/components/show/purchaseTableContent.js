@@ -7,6 +7,8 @@ import {
   Tooltip
 } from "@material-ui/core";
 import RemoveShoppingCartIcon from "@material-ui/icons/RemoveShoppingCart";
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 
 import { PurchaseContext } from "../../context/LocalState";
 
@@ -15,8 +17,9 @@ import { numberFormat } from "../../../../../../../utils/format/format";
 import useStyles from "../../styles";
 
 function PurchaseTableContent({ purchase }) {
-  const { deletePurchase } = useContext(PurchaseContext);
   const classes = useStyles();
+  const { deletePurchase } = useContext(PurchaseContext);
+
   return (
     <TableRow key={purchase.id_produk}>
       <TableCell align="center">
@@ -24,7 +27,6 @@ function PurchaseTableContent({ purchase }) {
           <IconButton
             onClick={() => deletePurchase(purchase.id_produk)}
             size="small"
-            aria-label="Remove Item"
           >
             <RemoveShoppingCartIcon fontSize="small" />
           </IconButton>
@@ -33,12 +35,21 @@ function PurchaseTableContent({ purchase }) {
       <TableCell align="center">{purchase.nama}</TableCell>
       <TableCell align="left">{numberFormat(purchase.harga)}</TableCell>
       <TableCell align="center">
+        <Tooltip title="Increase">
+          <IconButton className={classes.upIconButton} size="small">
+            <KeyboardArrowUpIcon size={20} className={classes.upIcon} />
+          </IconButton>
+        </Tooltip>
         <TextField
-          type="number"
-          inputProps={{ min: 0, style: { textAlign: "center" } }}
+          inputProps={{ readOnly: true, style: { textAlign: "center" } }}
           className={classes.textFieldQty}
-          value={numberFormat(purchase.qty)}
+          value={purchase.qty}
         />
+        <Tooltip title="Decrease">
+          <IconButton size="small" className={classes.downIconButton}>
+            <KeyboardArrowDownIcon size={20} className={classes.downIcon} />
+          </IconButton>
+        </Tooltip>
       </TableCell>
       <TableCell align="left">
         {numberFormat(purchase.harga * purchase.qty)}

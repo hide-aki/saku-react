@@ -19,6 +19,20 @@ const useStyles = makeStyles(theme => ({
     position: "relative",
     left: theme.spacing(55),
     bottom: theme.spacing(6)
+  },
+  upIconButton: {
+    position: "relative",
+    left: theme.spacing(1)
+  },
+  upIcon: {
+    position: "relative"
+  },
+  downIconButton: {
+    position: "relative",
+    right: theme.spacing(1)
+  },
+  downIcon: {
+    position: "relative"
   }
 }));
 

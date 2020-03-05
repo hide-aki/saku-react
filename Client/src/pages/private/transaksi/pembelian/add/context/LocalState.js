@@ -3,7 +3,7 @@ import PurchaseReducer from "./purchaseReducer";
 
 //initial state
 const initialState = {
-  purchase: []
+  purchase: [{ id_produk: "11", nama: "a", harga: 12, qty: 1 }]
 };
 
 //create Context
