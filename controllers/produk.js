@@ -79,11 +79,12 @@ exports.getProduk = async (req, res, next) => {
 exports.addProduk = async (req, res, next) => {
   try {
     const productCode = await createCode();
-    const { nama, harga, stok, deskripsi } = req.body;
+    const { nama, harga_jual, harga_beli, stok, deskripsi } = req.body;
     const newProduk = new Produk({
       id_produk: productCode,
       nama,
-      harga,
+      harga_jual,
+      harga_beli,
       stok,
       deskripsi
     });
@@ -109,12 +110,13 @@ exports.addProduk = async (req, res, next) => {
  */
 exports.updateProduk = async (req, res, next) => {
   try {
-    const { nama, harga, stok, deskripsi } = req.body;
+    const { nama, harga_jual, harga_beli, stok, deskripsi } = req.body;
     const id = req.params.id;
     await Produk.update(
       {
         nama,
-        harga,
+        harga_jual,
+        harga_beli,
         stok,
         deskripsi
       },
