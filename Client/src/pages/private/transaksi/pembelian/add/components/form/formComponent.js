@@ -21,6 +21,11 @@ import MaterialTable from "material-table";
 
 import { useSnackbar } from "notistack";
 
+import {
+  numberFormat,
+  removeFormat
+} from "../../../../../../../utils/format/format";
+
 const tableIcons = {
   DetailPanel: forwardRef((props, ref) => (
     <ChevronRight {...props} ref={ref} />
@@ -47,7 +52,8 @@ function FormComponent() {
   const [table, setTable] = useState({
     columns: [
       { title: "Product ID", field: "id_produk" },
-      { title: "Product Name", field: "nama" }
+      { title: "Product Name", field: "nama" },
+      { title: "Purchase Price", field: "harga" }
     ],
     data: [],
     localization: {
@@ -73,7 +79,8 @@ function FormComponent() {
               data: res.data.data.map(produk => {
                 return {
                   id_produk: produk.id_produk,
-                  nama: produk.nama
+                  nama: produk.nama,
+                  harga: numberFormat(produk.harga_beli)
                 };
               })
             };
@@ -131,8 +138,8 @@ function FormComponent() {
                 const newProductToCart = {
                   id_produk: rowData.id_produk,
                   nama: rowData.nama,
-                  qty: 0,
-                  harga: 0
+                  qty: 1,
+                  harga: removeFormat(rowData.harga)
                 };
                 addPurchase(newProductToCart);
               }

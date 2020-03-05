@@ -24,7 +24,6 @@ function PurchaseTable() {
         <TableHead>
           <TableRow>
             <TableCell align="center"></TableCell>
-            <TableCell align="center">ID Product</TableCell>
             <TableCell align="center">Name</TableCell>
             <TableCell align="center">Price (Rp)</TableCell>
             <TableCell align="center">Qty</TableCell>

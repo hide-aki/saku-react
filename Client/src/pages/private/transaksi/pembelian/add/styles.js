@@ -12,15 +12,12 @@ const useStyles = makeStyles(theme => ({
   tablePurchase: {
     paddingBottom: theme.spacing(3)
   },
-  textFieldPrice: {
-    width: theme.spacing(7)
-  },
   textFieldQty: {
     width: theme.spacing(4)
   },
   buttonSave: {
     position: "relative",
-    left: theme.spacing(75),
+    left: theme.spacing(55),
     bottom: theme.spacing(6)
   }
 }));

@@ -13,7 +13,7 @@ const Produk = require("../models/produk");
 exports.getListProduk = async (req, res, next) => {
   try {
     const getProduk = await Produk.findAll({
-      attributes: ["id_produk", "nama"]
+      attributes: ["id_produk", "nama", "harga_beli"]
     });
     res.status(200).json({ success: true, data: getProduk });
   } catch (error) {

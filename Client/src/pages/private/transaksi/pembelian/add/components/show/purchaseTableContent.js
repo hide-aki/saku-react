@@ -30,14 +30,8 @@ function PurchaseTableContent({ purchase }) {
           </IconButton>
         </Tooltip>
       </TableCell>
-      <TableCell align="center">{purchase.id_produk}</TableCell>
       <TableCell align="center">{purchase.nama}</TableCell>
-      <TableCell align="left">
-        <TextField
-          className={classes.textFieldPrice}
-          value={numberFormat(purchase.harga)}
-        />
-      </TableCell>
+      <TableCell align="left">{numberFormat(purchase.harga)}</TableCell>
       <TableCell align="center">
         <TextField
           type="number"
