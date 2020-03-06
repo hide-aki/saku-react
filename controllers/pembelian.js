@@ -3,7 +3,7 @@
  */
 const Sequelize = require("sequelize");
 /**
- * !inisiasi db untuk menggunakan transaction sequelize
+ * *inisiasi db untuk menggunakan transaction sequelize
  */
 const db = new Sequelize("express-api", "root", "", {
   dialect: "mysql"
@@ -98,7 +98,14 @@ exports.addPembelian = async (req, res, next) => {
      */
     const total = subtotal.reduce((acc, item) => (acc += item), 0);
     const codePurchase = await createCode();
-    console.log(req.body.purchase);
+
+    const forInsertDb = req.body.purchase.map(data => ({
+      id_transaksi: codePurchase,
+      id_produk: data.id_produk,
+      jumlah: data.qty,
+      subtotal: data.qty * data.harga
+    }));
+
     const result = await db.transaction(async transaction => {
       const purchase = await Transaksi.create(
         {
@@ -116,22 +123,11 @@ exports.addPembelian = async (req, res, next) => {
         },
         { transaction }
       );
-      // for (let i = 0; req.body.purchase.length <= i; i++) {
-      //   console.log(`${i}:${req.body.purchase[i].id_produk}`);
-      //   // await DetailPembelian.create(
-      //   //   {
-      //   //     id_transaksi: codePurchase,
-      //   //     id_produk: req.body.purchase[i].id_produk,
-      //   //     jumlah: req.body.purchase[i].qty,
-      //   //     subtotal: req.body.purchase[i].qty * req.body.purchase[i].harga
-      //   //   },
-      //   //   { transaction }
-      //   // );
-      // }
+      await DetailPembelian.bulkCreate(forInsertDb, { transaction });
 
       return purchase;
     });
   } catch (error) {
-    console.log(error);
+    res.status(500).json({ success: false, error: "Server error" });
   }
 };
