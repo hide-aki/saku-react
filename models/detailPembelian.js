@@ -14,24 +14,8 @@ const { connection } = require("../config/database");
 const detailPembelian = connection.define(
   "detail_pembelian",
   {
-    id_transaksi: {
-      type: Sequelize.STRING,
-      references: {
-        model: "pembelian",
-        key: "id_transaksi"
-      },
-      onUpdate: "cascade",
-      onDelete: "cascade"
-    },
-    id_produk: {
-      type: Sequelize.STRING,
-      references: {
-        model: "produk",
-        key: "id_produk"
-      },
-      onUpdate: "cascade",
-      onDelete: "cascade"
-    },
+    id_transaksi: { type: Sequelize.STRING },
+    id_produk: { type: Sequelize.STRING },
     jumlah: { type: Sequelize.INTEGER },
     subtotal: { type: Sequelize.INTEGER }
   },
