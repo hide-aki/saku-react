@@ -15,6 +15,7 @@ const db = new Sequelize("express-api", "root", "", {
 const Produk = require("../models/produk");
 const Pembelian = require("../models/pembelian");
 const DetailPembelian = require("../models/detailPembelian");
+const Transaksi = require("../models/transaksi");
 
 /**
  * @description get product code and name
