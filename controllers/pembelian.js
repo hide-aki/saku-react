@@ -124,8 +124,9 @@ exports.addPembelian = async (req, res, next) => {
         { transaction }
       );
       await DetailPembelian.bulkCreate(forInsertDb, { transaction });
-
-      return purchase;
+      res
+        .status(201)
+        .json({ success: true, data: "Pembelian berhasil disimpan" });
     });
   } catch (error) {
     res.status(500).json({ success: false, error: "Server error" });

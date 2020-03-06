@@ -1,4 +1,6 @@
 import React, { useContext } from "react";
+import { withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
 
 import axios from "axios";
 
@@ -10,9 +12,13 @@ import { PurchaseContext } from "../../context/LocalState";
 
 import { numberFormat } from "../../../../../../../utils/format/format";
 
+import { useSnackbar } from "notistack";
+
 import useStyles from "../../styles";
 
-function Balance() {
+function Balance(props) {
+  const { history } = props;
+  const { enqueueSnackbar } = useSnackbar();
   const { purchase } = useContext(PurchaseContext);
   const classes = useStyles();
   const subtotal = purchase.map(purchase => purchase.qty * purchase.harga);
@@ -30,8 +36,16 @@ function Balance() {
           }
         }
       );
+      if (saveCart.status === 201) {
+        enqueueSnackbar("Pembelian berhasil disimpan", { variant: "success" });
+        history.push("/pembelian");
+      }
     } catch (error) {
-      console.log(error);
+      if (error.response.status === 500) {
+        enqueueSnackbar("Server sedang bermasalah", { variant: "error" });
+      } else if (error.response.status === 501) {
+        enqueueSnackbar("Database sedang bermasalah", { variant: "error" });
+      }
     }
   };
 
@@ -58,5 +72,8 @@ function Balance() {
     </>
   );
 }
+Balance.propTypes = {
+  history: PropTypes.object.isRequired
+};
 
-export default Balance;
+export default withRouter(Balance);
