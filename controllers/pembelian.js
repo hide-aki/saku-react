@@ -132,3 +132,22 @@ exports.addPembelian = async (req, res, next) => {
     res.status(500).json({ success: false, error: "Server error" });
   }
 };
+
+/**
+ * @description get purchase data
+ * @callback GET /api/v1/pembelian
+ * @param req menangkap values dari form (berupa json)
+ * @param res return dari server ke client
+ * @param next middleware express
+ */
+
+exports.getPembelian = async (req, res, next) => {
+  try {
+    const getPembelian = await Pembelian.findAll();
+    return res.status(200).json({ success: true, data: getPembelian });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, error: "Server dalam masalah" });
+  }
+};
