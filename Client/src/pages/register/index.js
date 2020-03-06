@@ -1,44 +1,44 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 // Import komponen material-ui//
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Linked from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import TextField from "@material-ui/core/TextField";
+import Linked from "@material-ui/core/Link";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
 
 //Import styles (Registrasi)
-import useStyles from './styles';
+import useStyles from "./styles";
 
 //import copyright
-import Copyright from '../copyright';
+import Copyright from "../copyright";
 
 //notistack
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from "notistack";
 
 //import custome hooks
-import useFormValidateRegister from '../../utils/hooks/useFormValidateRegister';
-import validateRegister from '../../utils/validate/validateRegister';
+import useFormValidateRegister from "../../utils/hooks/useFormValidateRegister";
+import validateRegister from "../../utils/validate/validateRegister";
 
 const INITIAL_STATE = {
-  email: '',
-  username: '',
-  password: '',
-  confirm: ''
+  email: "",
+  username: "",
+  password: "",
+  confirm: ""
 };
 
 function Register() {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [serverError, setServerError] = useState({ username: '' });
+  const [serverError, setServerError] = useState({ username: "" });
 
   const {
     values,
@@ -53,13 +53,13 @@ function Register() {
     const { email, username, password } = values;
     const config = {
       headers: {
-        'Content-type': 'application/json'
+        "Content-type": "application/json"
       }
     };
     try {
       //aksi jangan lupa pake await karena async
       const postRegister = await axios.post(
-        '/api/v1/register',
+        "/api/v1/register",
         {
           email,
           username,
@@ -69,20 +69,18 @@ function Register() {
       );
 
       if (postRegister.status === 201) {
-        enqueueSnackbar(postRegister.data.data, { variant: 'success' });
+        enqueueSnackbar(postRegister.data.data, { variant: "success" });
       }
-    } catch (e) {
+    } catch (error) {
       //aksi kalo error
-      const code = e.message;
-      const getCode = code.substr(32, 3);
-      if (getCode === '409') {
+      if (error.response.status === 409) {
         setServerError({
           username: `Username ${username} atau email ${email} sudah terdaftar di sistem`
         });
-      } else if (getCode === '400') {
-        setServerError({ username: 'Terjadi kesalahan, silahkan coba lagi' });
-      } else if (getCode === '500') {
-        setServerError({ username: 'Server sedang dalam masalah' });
+      } else if (error.response.status === 400) {
+        setServerError({ username: "Terjadi kesalahan, silahkan coba lagi" });
+      } else if (error.response.status === 500) {
+        setServerError({ username: "Server sedang dalam masalah" });
       }
     }
   }

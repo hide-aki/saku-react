@@ -1,5 +1,7 @@
 import React, { useContext } from "react";
 
+import axios from "axios";
+
 import { Typography, Button } from "@material-ui/core";
 
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
@@ -16,6 +18,23 @@ function Balance() {
   const subtotal = purchase.map(purchase => purchase.qty * purchase.harga);
   const total = subtotal.reduce((acc, item) => (acc += item), 0);
 
+  const handleSubmit = async () => {
+    try {
+      const saveCart = await axios.post(
+        "/api/v1/pembelian",
+        { purchase },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("key")}`,
+            "Content-type": "application/json"
+          }
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <Typography className={classes.titlePaper} variant="h5">
@@ -26,7 +45,7 @@ function Balance() {
       </Typography>
       {total > 0 && (
         <Button
-          onClick={() => alert("Save")}
+          onClick={() => handleSubmit()}
           className={classes.buttonSave}
           size="small"
           startIcon={<ShoppingCartIcon />}

@@ -51,19 +51,17 @@ function FormDialogAdd({
         handleCloseWithAction();
         enqueueSnackbar(postCoa.data.data, { variant: "success" });
       }
-    } catch (e) {
-      const code = e.message;
-      const getCode = code.substr(32, 3);
-      if (getCode === "401") {
+    } catch (error) {
+      if (error.response.status === 401) {
         setServerError({
-          nama: "User tidak terautentikasi, silahkan login kembali"
+          no_coa: error.response.data.error
         });
-      } else if (getCode === "409") {
+      } else if (error.response.status === 409) {
         setServerError({
-          nama: `COA ${nama} sudah ada di sistem`
+          no_coa: `COA ${nama} sudah ada di sistem`
         });
-      } else if (getCode === "500") {
-        setServerError({ nama: "Server dalam masalah" });
+      } else if (error.response.status === 500) {
+        setServerError({ no_coa: error.response.data.error });
       }
     }
   }

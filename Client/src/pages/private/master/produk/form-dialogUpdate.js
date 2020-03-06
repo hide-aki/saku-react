@@ -68,13 +68,11 @@ function FormDialogUpdate({
         });
       }
     } catch (error) {
-      const code = error.message;
-      const getCode = code.substr(32, 3);
-      if (getCode === "401") {
+      if (error.response.status === 401) {
         setServerError({
           nama: "User tidak terautentikasi, silahkan login kembali"
         });
-      } else if (getCode === "500") {
+      } else if (error.response.status === 500) {
         setServerError({ nama: "Server dalam masalah" });
       }
     }

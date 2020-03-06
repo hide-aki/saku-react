@@ -17,9 +17,13 @@ const passport = require("passport");
  * @implements config router
  * @param passport mengautentikasi jwt passport
  */
-const { getListProduk } = require("../controllers/pembelian");
+const { getListProduk, addPembelian } = require("../controllers/pembelian");
 router
   .route("/list")
   .get(passport.authenticate("jwt", { session: false }), getListProduk);
+
+router
+  .route("/")
+  .post(passport.authenticate("jwt", { session: false }), addPembelian);
 
 module.exports = router;

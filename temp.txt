@@ -1,0 +1,36 @@
+try {
+    // const transaction = await Sequelize.transaction();
+    const subtotal = req.body.purchase.map(
+      purchase => purchase.qty * purchase.harga
+    );
+    /**
+     * @method reduce
+     * @param 1 callback (accumulator, curren value)
+     * @param 2 nilai awai
+     */
+    const total = subtotal.reduce((acc, item) => (acc += item), 0);
+    const codePurchase = await createCode();
+   
+    // try {
+    //   // console.log("hi");
+    //   //create transaction purchase
+    //   const pembelian = {
+    //     id_transaksi: codePurchase,
+    //     tanggal: "2020-10-01",
+    //     total: total
+    //   };
+    //   console.log(pembelian);
+    //   // await Pembelian.create(
+    //   //   {
+    //   //     id_transaksi: codePurchase,
+    //   //     tanggal: Date.NOW(),
+    //   //     total: total
+    //   //   },
+    //   //   { transaction }
+    //   // );
+    // } catch (error) {
+    //   res.status(501).json({ success: false, error: "Database error" });
+    // }
+  } catch (error) {
+    res.status(500).json({ success: false, error: "Server error" });
+  }

@@ -60,14 +60,12 @@ function FormDialogAdd({ config, open, handleClose, handleCloseWithAction }) {
         handleCloseWithAction();
         enqueueSnackbar(postProduk.data.data, { variant: "success" });
       }
-    } catch (e) {
-      const code = e.message;
-      const getCode = code.substr(32, 3);
-      if (getCode === "401") {
+    } catch (error) {
+      if (error.response.status === 401) {
         setServerError({
           nama: "User tidak terautentikasi, silahkan login kembali"
         });
-      } else if (getCode === "500") {
+      } else if (error.response.status === 500) {
         setServerError({ nama: "Server dalam masalah" });
       }
     }

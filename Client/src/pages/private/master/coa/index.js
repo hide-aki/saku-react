@@ -122,13 +122,11 @@ function Coa() {
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        const code = error.message;
-        const getCode = code.substr(32, 3);
-        if (getCode === "401") {
+        if (error.response.status === 401) {
           enqueueSnackbar("User tidak terautentikasi, silahkan login kembali", {
             variant: "error"
           });
-        } else if (getCode === "500") {
+        } else if (error.response.status === 500) {
           enqueueSnackbar("Server dalam masalah", { variant: "error" });
         }
       }
