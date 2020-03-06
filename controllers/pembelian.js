@@ -88,27 +88,40 @@ const createCode = async () => {
  */
 exports.addPembelian = async (req, res, next) => {
   try {
-    const result = await db.transaction(async t => {
-      const purchase = await Pembelian.create(
-        {
-          id_transaksi: "asas",
-          tanggal: "2019-12-01",
-          total: 12000
-        },
-        { transaction: t }
-      );
-      await DetailPembelian.create(
-        {
-          id_transaksi: "asas",
-          id_produk: "121",
-          jumlah: 4,
-          subtotal: 12000
-        },
-        { transaction: t }
-      );
+    const subtotal = req.body.purchase.map(
+      purchase => purchase.qty * purchase.harga
+    );
+    /**
+     * @method reduce
+     * @param 1 callback (accumulator, curren value)
+     * @param 2 nilai awai
+     */
+    const total = subtotal.reduce((acc, item) => (acc += item), 0);
+    const codePurchase = await createCode();
+    console.log(req.body.purchase);
+    // const result = await db.transaction(async transaction => {
+    //   const purchase = await Transaksi.create(
+    //     {
+    //       id_transaksi: codePurchase,
+    //       tanggal: new Date(),
+    //       total
+    //     },
+    //     { transaction }
+    //   );
+    //   await Pembelian.create(
+    //     {
+    //       id_transaksi: codePurchase,
+    //       tanggal: new Date(),
+    //       total
+    //     },
+    //     { transaction }
+    //   );
+    //   await DetailPembelian.bulkCreate([], {
+    //     transaction
+    //   });
 
-      return purchase;
-    });
+    //   return purchase;
+    // });
   } catch (error) {
     console.log(error);
   }
