@@ -13,7 +13,6 @@ import useStyles from "../../styles";
 function Balance() {
   const { purchase } = useContext(PurchaseContext);
   const classes = useStyles();
-
   const subtotal = purchase.map(purchase => purchase.qty * purchase.harga);
   const total = subtotal.reduce((acc, item) => (acc += item), 0);
 

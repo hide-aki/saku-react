@@ -124,25 +124,14 @@ function FormComponent() {
             icon: () => <AddShoppingCartIcon />,
             tooltip: "Add to cart",
             onClick: (event, rowData) => {
-              const cekList = purchase.some(
-                purchase => purchase.id_produk === rowData.id_produk
-              );
-              if (cekList) {
-                enqueueSnackbar(
-                  `Produk ${rowData.id_produk} sudah ada di keranjang`,
-                  {
-                    variant: "error"
-                  }
-                );
-              } else {
-                const newProductToCart = {
-                  id_produk: rowData.id_produk,
-                  nama: rowData.nama,
-                  qty: 1,
-                  harga: removeFormat(rowData.harga)
-                };
-                addPurchase(newProductToCart);
-              }
+              const numHarga = removeFormat(rowData.harga);
+              const newProductToCart = {
+                id_produk: rowData.id_produk,
+                nama: rowData.nama,
+                qty: 1,
+                harga: parseFloat(numHarga)
+              };
+              addPurchase(newProductToCart);
             }
           }
         ]}

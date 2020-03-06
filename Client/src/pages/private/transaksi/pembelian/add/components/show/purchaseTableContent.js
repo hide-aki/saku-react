@@ -21,7 +21,21 @@ function PurchaseTableContent({ purchase }) {
   const { deletePurchase, updatePurchase } = useContext(PurchaseContext);
 
   function increase(purchase) {
-    updatePurchase(purchase.id_produk, Number(purchase.qty) + 1);
+    updatePurchase(
+      purchase.id_produk,
+      purchase.nama,
+      purchase.harga,
+      purchase.qty + 1
+    );
+  }
+
+  function decrease(purchase) {
+    updatePurchase(
+      purchase.id_produk,
+      purchase.nama,
+      purchase.harga,
+      purchase.qty - 1
+    );
   }
 
   return (
@@ -57,7 +71,11 @@ function PurchaseTableContent({ purchase }) {
           value={purchase.qty}
         />
         <Tooltip title="Decrease">
-          <IconButton size="small" className={classes.downIconButton}>
+          <IconButton
+            onClick={() => decrease(purchase)}
+            size="small"
+            className={classes.downIconButton}
+          >
             <KeyboardArrowDownIcon size={20} className={classes.downIcon} />
           </IconButton>
         </Tooltip>

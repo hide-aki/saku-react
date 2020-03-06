@@ -3,7 +3,7 @@ import PurchaseReducer from "./purchaseReducer";
 
 //initial state
 const initialState = {
-  purchase: [{ id_produk: "11", nama: "a", harga: 12, qty: 1 }]
+  purchase: []
 };
 
 //create Context
@@ -27,11 +27,10 @@ export const PurchaseProvider = ({ children }) => {
     });
   }
 
-  function updatePurchase(id_produk, qty) {
+  function updatePurchase(id_produk, nama, harga, qty) {
     dispatch({
       type: "UPDATE_PURCHASE",
-      id_produk,
-      qty
+      payload: { id_produk, nama, harga, qty }
     });
   }
 
