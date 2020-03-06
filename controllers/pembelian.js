@@ -1,7 +1,13 @@
 /**
  * @requires import sequelieze
  */
-const sequelize = require("sequelize");
+const Sequelize = require("sequelize");
+/**
+ * !inisiasi db untuk menggunakan transaction sequelize
+ */
+const db = new Sequelize("express-api", "root", "", {
+  dialect: "mysql"
+});
 
 /**
  * @requires import model
@@ -81,7 +87,7 @@ const createCode = async () => {
  */
 exports.addPembelian = async (req, res, next) => {
   try {
-    const result = await sequelize.transaction(async t => {
+    const result = await db.transaction(async t => {
       const purchase = await Pembelian.create(
         {
           id_transaksi: "asas",
@@ -90,8 +96,19 @@ exports.addPembelian = async (req, res, next) => {
         },
         { transaction: t }
       );
+      await DetailPembelian.create(
+        {
+          id_transaksi: "asas",
+          id_produk: "121",
+          jumlah: 4,
+          subtotal: 12000
+        },
+        { transaction: t }
+      );
 
       return purchase;
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
