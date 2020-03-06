@@ -99,29 +99,38 @@ exports.addPembelian = async (req, res, next) => {
     const total = subtotal.reduce((acc, item) => (acc += item), 0);
     const codePurchase = await createCode();
     console.log(req.body.purchase);
-    // const result = await db.transaction(async transaction => {
-    //   const purchase = await Transaksi.create(
-    //     {
-    //       id_transaksi: codePurchase,
-    //       tanggal: new Date(),
-    //       total
-    //     },
-    //     { transaction }
-    //   );
-    //   await Pembelian.create(
-    //     {
-    //       id_transaksi: codePurchase,
-    //       tanggal: new Date(),
-    //       total
-    //     },
-    //     { transaction }
-    //   );
-    //   await DetailPembelian.bulkCreate([], {
-    //     transaction
-    //   });
+    const result = await db.transaction(async transaction => {
+      const purchase = await Transaksi.create(
+        {
+          id_transaksi: codePurchase,
+          tanggal: new Date(),
+          total
+        },
+        { transaction }
+      );
+      await Pembelian.create(
+        {
+          id_transaksi: codePurchase,
+          tanggal: new Date(),
+          total
+        },
+        { transaction }
+      );
+      // for (let i = 0; req.body.purchase.length <= i; i++) {
+      //   console.log(`${i}:${req.body.purchase[i].id_produk}`);
+      //   // await DetailPembelian.create(
+      //   //   {
+      //   //     id_transaksi: codePurchase,
+      //   //     id_produk: req.body.purchase[i].id_produk,
+      //   //     jumlah: req.body.purchase[i].qty,
+      //   //     subtotal: req.body.purchase[i].qty * req.body.purchase[i].harga
+      //   //   },
+      //   //   { transaction }
+      //   // );
+      // }
 
-    //   return purchase;
-    // });
+      return purchase;
+    });
   } catch (error) {
     console.log(error);
   }
