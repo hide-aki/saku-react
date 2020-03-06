@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import { Paper, Grid, Typography } from "@material-ui/core";
+import { Paper, Grid } from "@material-ui/core";
 
 import { PurchaseProvider } from "./context/LocalState";
 

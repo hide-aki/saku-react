@@ -22,7 +22,7 @@ export default (state, action) => {
           purchase: [action.payload, ...state.purchase]
         };
       }
-
+    /* falls through */
     case "DELETE_PURCHASE":
       return {
         ...state,
@@ -30,6 +30,7 @@ export default (state, action) => {
           purchase => purchase.id_produk !== action.payload
         )
       };
+    /* falls through */
     case "UPDATE_PURCHASE":
       if (action.payload.qty <= 0) {
         return state;
@@ -50,6 +51,7 @@ export default (state, action) => {
           purchase: objArr
         };
       }
+    /* falls through */
     default:
       return state;
   }

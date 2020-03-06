@@ -1,7 +1,7 @@
 /**
  * @requires import sequelieze
  */
-// const sequelize = require("sequelize");
+const sequelize = require("sequelize");
 
 /**
  * @requires import model
@@ -81,6 +81,17 @@ const createCode = async () => {
  */
 exports.addPembelian = async (req, res, next) => {
   try {
-    console.log("Testing");
+    const result = await sequelize.transaction(async t => {
+      const purchase = await Pembelian.create(
+        {
+          id_transaksi: "asas",
+          tanggal: "2019-12-01",
+          total: 12000
+        },
+        { transaction: t }
+      );
+
+      return purchase;
+    });
   } catch (error) {}
 };
