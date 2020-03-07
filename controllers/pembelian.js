@@ -89,53 +89,94 @@ const createCode = async () => {
  */
 exports.addPembelian = async (req, res, next) => {
   try {
+    const subtotal = req.body.purchase.map(
+      purchase => purchase.qty * purchase.harga
+    );
     /**
-     * * Buat array baru untuk mengambil id_produk
+     * @method reduce
+     * @param 1 callback (accumulator, curren value)
+     * @param 2 nilai awal
      */
-    const listProductCode = req.body.purchase.map(code => {
-      const codeProduct = Object.values(code);
-      return [codeProduct[0], codeProduct[2]];
+    const total = subtotal.reduce((acc, item) => (acc += item), 0);
+    const codePurchase = await createCode();
+    /**
+     * *Buat objek untuk insert jurnal
+     */
+    const insertJurnal = [
+      {
+        id_transaksi: codePurchase,
+        no_coa: "1102",
+        tanggal: new Date(),
+        nominal: total
+      },
+      {
+        id_transaksi: codePurchase,
+        no_coa: "1101",
+        tanggal: new Date(),
+        nominal: total
+      }
+    ];
+    const forInsertDb = req.body.purchase.map(data => ({
+      id_transaksi: codePurchase,
+      id_produk: data.id_produk,
+      jumlah: data.qty,
+      subtotal: data.qty * data.harga
+    }));
+
+    //update stok produk
+    req.body.purchase.map(async (data, index) => {
+      try {
+        const keepProduct = await Produk.findAll({
+          raw: true,
+          where: { id_produk: data.id_produk }
+        });
+        const update = await db.transaction(async transaction => {
+          await Produk.destroy(
+            { where: { id_produk: keepProduct[0].id_produk } },
+            { transaction }
+          );
+          const stok = parseFloat(keepProduct[0].stok) + parseFloat(data.qty);
+          await Produk.create(
+            {
+              id_produk: keepProduct[0].id_produk,
+              nama: keepProduct[0].nama,
+              harga_jual: keepProduct[0].harga_jual,
+              harga_beli: keepProduct[0].harga_beli,
+              stok,
+              deskripsi: keepProduct[0].deskripsi
+            },
+            { transaction }
+          );
+        });
+      } catch (error) {
+        console.log(error);
+      }
     });
-    // const subtotal = req.body.purchase.map(
-    //   purchase => purchase.qty * purchase.harga
-    // );
-    // /**
-    //  * @method reduce
-    //  * @param 1 callback (accumulator, curren value)
-    //  * @param 2 nilai awal
-    //  */
-    // const total = subtotal.reduce((acc, item) => (acc += item), 0);
-    // const codePurchase = await createCode();
 
-    // const forInsertDb = req.body.purchase.map(data => ({
-    //   id_transaksi: codePurchase,
-    //   id_produk: data.id_produk,
-    //   jumlah: data.qty,
-    //   subtotal: data.qty * data.harga
-    // }));
+    const result = await db.transaction(async transaction => {
+      const purchase = await Transaksi.create(
+        {
+          id_transaksi: codePurchase,
+          tanggal: new Date(),
+          total
+        },
+        { transaction }
+      );
+      await Jurnal.bulkCreate(insertJurnal, { transaction });
+      await Pembelian.create(
+        {
+          id_transaksi: codePurchase,
+          tanggal: new Date(),
+          total
+        },
+        { transaction }
+      );
+      await DetailPembelian.bulkCreate(forInsertDb, { transaction });
 
-    // const result = await db.transaction(async transaction => {
-    //   const purchase = await Transaksi.create(
-    //     {
-    //       id_transaksi: codePurchase,
-    //       tanggal: new Date(),
-    //       total
-    //     },
-    //     { transaction }
-    //   );
-    //   await Pembelian.create(
-    //     {
-    //       id_transaksi: codePurchase,
-    //       tanggal: new Date(),
-    //       total
-    //     },
-    //     { transaction }
-    //   );
-    //   await DetailPembelian.bulkCreate(forInsertDb, { transaction });
-    //   res
-    //     .status(201)
-    //     .json({ success: true, data: "Pembelian berhasil disimpan" });
-    // });
+      res
+        .status(201)
+        .json({ success: true, data: "Pembelian berhasil disimpan" });
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: "Server error" });
   }
