@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 5.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 05 Mar 2020 pada 06.06
--- Versi server: 10.3.16-MariaDB
--- Versi PHP: 7.3.7
+-- Waktu pembuatan: 07 Mar 2020 pada 16.05
+-- Versi server: 10.4.11-MariaDB
+-- Versi PHP: 7.4.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -50,6 +50,70 @@ INSERT INTO `coa` (`no_coa`, `nama`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `detail_pembelian`
+--
+
+CREATE TABLE `detail_pembelian` (
+  `id` int(11) NOT NULL,
+  `id_transaksi` varchar(255) DEFAULT NULL,
+  `id_produk` varchar(255) DEFAULT NULL,
+  `jumlah` int(11) DEFAULT NULL,
+  `subtotal` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `detail_pembelian`
+--
+
+INSERT INTO `detail_pembelian` (`id`, `id_transaksi`, `id_produk`, `jumlah`, `subtotal`) VALUES
+(1, 'TRP000001', 'PRD000003', 1, 7500),
+(2, 'TRP000001', 'PRD000002', 2, 13500),
+(3, 'TRP000001', 'PRD000001', 3, 21000);
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `jurnal`
+--
+
+CREATE TABLE `jurnal` (
+  `id` int(11) NOT NULL,
+  `id_transaksi` varchar(255) DEFAULT NULL,
+  `no_coa` varchar(255) DEFAULT NULL,
+  `tanggal` date DEFAULT NULL,
+  `nominal` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `jurnal`
+--
+
+INSERT INTO `jurnal` (`id`, `id_transaksi`, `no_coa`, `tanggal`, `nominal`) VALUES
+(1, 'TRP000001', '1102', '2020-03-07', 42000),
+(2, 'TRP000001', '1101', '2020-03-07', 42000);
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `pembelian`
+--
+
+CREATE TABLE `pembelian` (
+  `id_transaksi` varchar(255) NOT NULL,
+  `tanggal` date DEFAULT NULL,
+  `total` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `pembelian`
+--
+
+INSERT INTO `pembelian` (`id_transaksi`, `tanggal`, `total`) VALUES
+('TRP000001', '2020-03-07', 42000);
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `produk`
 --
 
@@ -67,9 +131,9 @@ CREATE TABLE `produk` (
 --
 
 INSERT INTO `produk` (`id_produk`, `nama`, `harga_jual`, `harga_beli`, `stok`, `deskripsi`) VALUES
-('PRD000001', 'Sampoerna A-Mild', 14000, 7000, 0, '-'),
-('PRD000002', 'Djarum Super', 13500, 6750, 0, '-'),
-('PRD000003', 'Gudang Garam', 15000, 7500, 0, '-'),
+('PRD000001', 'Sampoerna A-Mild', 14000, 7000, 3, '-'),
+('PRD000002', 'Djarum Super', 13500, 6750, 2, '-'),
+('PRD000003', 'Gudang Garam', 15000, 7500, 1, '-'),
 ('PRD000004', 'Indomie Goreng', 2500, 1250, 0, '-'),
 ('PRD000005', 'Indomie Kari Ayam', 2000, 1000, 0, '-'),
 ('PRD000006', 'Mie Sedap Goreng', 3000, 1500, 0, '-'),
@@ -92,6 +156,25 @@ INSERT INTO `produk` (`id_produk`, `nama`, `harga_jual`, `harga_beli`, `stok`, `
 ('PRD000023', 'Teh Botol 500 ml', 4000, 2000, 0, '-'),
 ('PRD000024', 'Fruit tea 500 ml', 3500, 1750, 0, '-'),
 ('PRD000025', 'Good Day 500 ml', 5000, 2500, 0, '-');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `transaksi`
+--
+
+CREATE TABLE `transaksi` (
+  `id_transaksi` varchar(255) NOT NULL,
+  `tanggal` date DEFAULT NULL,
+  `total` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `transaksi`
+--
+
+INSERT INTO `transaksi` (`id_transaksi`, `tanggal`, `total`) VALUES
+('TRP000001', '2020-03-07', 42000);
 
 -- --------------------------------------------------------
 
@@ -126,10 +209,34 @@ ALTER TABLE `coa`
   ADD PRIMARY KEY (`no_coa`);
 
 --
+-- Indeks untuk tabel `detail_pembelian`
+--
+ALTER TABLE `detail_pembelian`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indeks untuk tabel `jurnal`
+--
+ALTER TABLE `jurnal`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indeks untuk tabel `pembelian`
+--
+ALTER TABLE `pembelian`
+  ADD PRIMARY KEY (`id_transaksi`);
+
+--
 -- Indeks untuk tabel `produk`
 --
 ALTER TABLE `produk`
   ADD PRIMARY KEY (`id_produk`);
+
+--
+-- Indeks untuk tabel `transaksi`
+--
+ALTER TABLE `transaksi`
+  ADD PRIMARY KEY (`id_transaksi`);
 
 --
 -- Indeks untuk tabel `users`
@@ -140,6 +247,18 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT untuk tabel yang dibuang
 --
+
+--
+-- AUTO_INCREMENT untuk tabel `detail_pembelian`
+--
+ALTER TABLE `detail_pembelian`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT untuk tabel `jurnal`
+--
+ALTER TABLE `jurnal`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`

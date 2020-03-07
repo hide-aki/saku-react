@@ -24,6 +24,8 @@ import MaterialTable from "material-table";
 
 import { useSnackbar } from "notistack";
 
+import { numberFormat, formatDate } from "../../../../../utils/format/format";
+
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -49,10 +51,19 @@ const tableIcons = {
 };
 
 function ShowPembelian(props) {
+  const { enqueueSnackbar } = useSnackbar();
   const { history } = props;
+  const [loading, setLoading] = useState(false);
   const [table, setTable] = useState({
-    columns: [{ title: "Purchase ID" }, { title: "Date" }, { title: "Total" }],
+    columns: [
+      { title: "Purchase ID", field: "id_transaksi" },
+      { title: "Date", field: "tanggal" },
+      { title: "Total (Rp)", field: "total" }
+    ],
     data: [],
+    detailPanel: rowData => {
+      alert(rowData);
+    },
     actions: [
       {
         icon: () => <AddBox />,
@@ -64,13 +75,60 @@ function ShowPembelian(props) {
       }
     ]
   });
+  useEffect(() => {
+    setLoading(true);
+    async function getData() {
+      try {
+        const res = await axios.get("/api/v1/pembelian", {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("key")}`
+          }
+        });
+        if (res.data.data.length > 0) {
+          setTable(table => {
+            return {
+              ...table,
+              data: res.data.data.map(purchase => {
+                return {
+                  id_transaksi: purchase.id_transaksi,
+                  tanggal: formatDate(purchase.tanggal),
+                  total: numberFormat(purchase.total)
+                };
+              })
+            };
+          });
+        } else {
+          setTable(table => {
+            return {
+              ...table,
+              data: []
+            };
+          });
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        if (error.response.status === 401) {
+          enqueueSnackbar("User tidak terautentikasi, silahkan login", {
+            variant: "error"
+          });
+        } else if (error.response.status === 500) {
+          enqueueSnackbar("Server dalam masalah", { variant: "error" });
+        }
+      }
+    }
+    getData();
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       <MaterialTable
+        isLoading={loading}
         title="Purchase Table"
         icons={tableIcons}
         columns={table.columns}
         data={table.data}
+        detailPanel={table.detailPanel}
         actions={table.actions}
       ></MaterialTable>
     </>
