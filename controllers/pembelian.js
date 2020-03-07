@@ -16,6 +16,7 @@ const Produk = require("../models/produk");
 const Pembelian = require("../models/pembelian");
 const DetailPembelian = require("../models/detailPembelian");
 const Transaksi = require("../models/transaksi");
+const Jurnal = require("../models/jurnal");
 
 /**
  * @description get product code and name
@@ -88,46 +89,53 @@ const createCode = async () => {
  */
 exports.addPembelian = async (req, res, next) => {
   try {
-    const subtotal = req.body.purchase.map(
-      purchase => purchase.qty * purchase.harga
-    );
     /**
-     * @method reduce
-     * @param 1 callback (accumulator, curren value)
-     * @param 2 nilai awai
+     * * Buat array baru untuk mengambil id_produk
      */
-    const total = subtotal.reduce((acc, item) => (acc += item), 0);
-    const codePurchase = await createCode();
-
-    const forInsertDb = req.body.purchase.map(data => ({
-      id_transaksi: codePurchase,
-      id_produk: data.id_produk,
-      jumlah: data.qty,
-      subtotal: data.qty * data.harga
-    }));
-
-    const result = await db.transaction(async transaction => {
-      const purchase = await Transaksi.create(
-        {
-          id_transaksi: codePurchase,
-          tanggal: new Date(),
-          total
-        },
-        { transaction }
-      );
-      await Pembelian.create(
-        {
-          id_transaksi: codePurchase,
-          tanggal: new Date(),
-          total
-        },
-        { transaction }
-      );
-      await DetailPembelian.bulkCreate(forInsertDb, { transaction });
-      res
-        .status(201)
-        .json({ success: true, data: "Pembelian berhasil disimpan" });
+    const listProductCode = req.body.purchase.map(code => {
+      const codeProduct = Object.values(code);
+      return [codeProduct[0], codeProduct[2]];
     });
+    // const subtotal = req.body.purchase.map(
+    //   purchase => purchase.qty * purchase.harga
+    // );
+    // /**
+    //  * @method reduce
+    //  * @param 1 callback (accumulator, curren value)
+    //  * @param 2 nilai awal
+    //  */
+    // const total = subtotal.reduce((acc, item) => (acc += item), 0);
+    // const codePurchase = await createCode();
+
+    // const forInsertDb = req.body.purchase.map(data => ({
+    //   id_transaksi: codePurchase,
+    //   id_produk: data.id_produk,
+    //   jumlah: data.qty,
+    //   subtotal: data.qty * data.harga
+    // }));
+
+    // const result = await db.transaction(async transaction => {
+    //   const purchase = await Transaksi.create(
+    //     {
+    //       id_transaksi: codePurchase,
+    //       tanggal: new Date(),
+    //       total
+    //     },
+    //     { transaction }
+    //   );
+    //   await Pembelian.create(
+    //     {
+    //       id_transaksi: codePurchase,
+    //       tanggal: new Date(),
+    //       total
+    //     },
+    //     { transaction }
+    //   );
+    //   await DetailPembelian.bulkCreate(forInsertDb, { transaction });
+    //   res
+    //     .status(201)
+    //     .json({ success: true, data: "Pembelian berhasil disimpan" });
+    // });
   } catch (error) {
     res.status(500).json({ success: false, error: "Server error" });
   }
