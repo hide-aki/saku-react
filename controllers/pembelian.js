@@ -2,7 +2,7 @@
  * @requires import sequelieze
  */
 const Sequelize = require("sequelize");
-const { Op } = require("sequelize");
+const { Op, QueryTypes } = require("sequelize");
 /**
  * *inisiasi db untuk menggunakan transaction sequelize
  */
@@ -214,5 +214,42 @@ exports.getPembelian = async (req, res, next) => {
     return res
       .status(500)
       .json({ success: false, error: "Server dalam masalah" });
+  }
+};
+
+/**
+ * @description get detail purchase data
+ * @callback GET /api/v1/pembelian/:id
+ * @param req menangkap values dari form (berupa json)
+ * @param res return dari server ke client
+ * @param next middleware express
+ */
+exports.getPembelianDetail = async (req, res, next) => {
+  try {
+    const id_transaksi = req.params.id;
+
+    const getTotal = await Pembelian.findAll({
+      attributes: ["total"],
+      where: { id_transaksi }
+    });
+    const totalPurchase = getTotal[0].total;
+    const detailPurchase = await db.query(
+      `SELECT produk.id_produk, produk.nama, detail_pembelian.jumlah,
+        produk.harga_beli, detail_pembelian.subtotal FROM produk 
+        INNER JOIN detail_pembelian ON produk.id_produk=detail_pembelian.id_produk
+        INNER JOIN pembelian ON pembelian.id_transaksi=detail_pembelian.id_transaksi
+        WHERE pembelian.id_transaksi = :id_trans
+        `,
+      {
+        replacements: { id_trans: id_transaksi },
+        type: QueryTypes.SELECT
+      }
+    );
+    res.status(200).json({
+      success: true,
+      data: { id_transaksi, totalPurchase, detailPurchase }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: "Server error" });
   }
 };

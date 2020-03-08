@@ -20,7 +20,8 @@ const passport = require("passport");
 const {
   getListProduk,
   addPembelian,
-  getPembelian
+  getPembelian,
+  getPembelianDetail
 } = require("../controllers/pembelian");
 router
   .route("/list")
@@ -30,5 +31,9 @@ router
   .route("/")
   .get(passport.authenticate("jwt", { session: false }), getPembelian)
   .post(passport.authenticate("jwt", { session: false }), addPembelian);
+
+router
+  .route("/:id")
+  .get(passport.authenticate("jwt", { session: false }), getPembelianDetail);
 
 module.exports = router;

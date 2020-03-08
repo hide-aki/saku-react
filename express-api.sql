@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 07 Mar 2020 pada 16.05
+-- Waktu pembuatan: 08 Mar 2020 pada 15.00
 -- Versi server: 10.4.11-MariaDB
 -- Versi PHP: 7.4.2
 
@@ -61,6 +61,18 @@ CREATE TABLE `detail_pembelian` (
   `subtotal` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data untuk tabel `detail_pembelian`
+--
+
+INSERT INTO `detail_pembelian` (`id`, `id_transaksi`, `id_produk`, `jumlah`, `subtotal`) VALUES
+(4, 'TRP000001', 'PRD000021', 3, 3000),
+(5, 'TRP000001', 'PRD000011', 4, 6000),
+(6, 'TRP000001', 'PRD000001', 5, 35000),
+(7, 'TRP000002', 'PRD000021', 2, 2000),
+(8, 'TRP000002', 'PRD000011', 2, 3000),
+(9, 'TRP000002', 'PRD000001', 2, 14000);
+
 -- --------------------------------------------------------
 
 --
@@ -75,6 +87,16 @@ CREATE TABLE `jurnal` (
   `nominal` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data untuk tabel `jurnal`
+--
+
+INSERT INTO `jurnal` (`id`, `id_transaksi`, `no_coa`, `tanggal`, `nominal`) VALUES
+(3, 'TRP000001', '1102', '2020-03-08', 44000),
+(4, 'TRP000001', '1101', '2020-03-08', 44000),
+(5, 'TRP000002', '1102', '2020-03-08', 19000),
+(6, 'TRP000002', '1101', '2020-03-08', 19000);
+
 -- --------------------------------------------------------
 
 --
@@ -86,6 +108,14 @@ CREATE TABLE `pembelian` (
   `tanggal` date DEFAULT NULL,
   `total` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `pembelian`
+--
+
+INSERT INTO `pembelian` (`id_transaksi`, `tanggal`, `total`) VALUES
+('TRP000001', '2020-03-08', 44000),
+('TRP000002', '2020-03-08', 19000);
 
 -- --------------------------------------------------------
 
@@ -107,7 +137,7 @@ CREATE TABLE `produk` (
 --
 
 INSERT INTO `produk` (`id_produk`, `nama`, `harga_jual`, `harga_beli`, `stok`, `deskripsi`) VALUES
-('PRD000001', 'Sampoerna A-Mild', 14000, 7000, 0, '-'),
+('PRD000001', 'Sampoerna A-Mild', 14000, 7000, 7, '-'),
 ('PRD000002', 'Djarum Super', 13500, 6750, 0, '-'),
 ('PRD000003', 'Gudang Garam', 15000, 7500, 0, '-'),
 ('PRD000004', 'Indomie Goreng', 2500, 1250, 0, '-'),
@@ -117,7 +147,7 @@ INSERT INTO `produk` (`id_produk`, `nama`, `harga_jual`, `harga_beli`, `stok`, `
 ('PRD000008', 'Sari Roti Sandwich', 5000, 2500, 0, '-'),
 ('PRD000009', 'Lifeboy sabun batang', 2000, 1000, 0, '-'),
 ('PRD000010', 'Clear shampoo', 1000, 500, 0, '-'),
-('PRD000011', 'Pepsodent blue mint', 3000, 1500, 0, '-'),
+('PRD000011', 'Pepsodent blue mint', 3000, 1500, 6, '-'),
 ('PRD000012', 'Dove white', 1500, 750, 0, '-'),
 ('PRD000013', 'Pensil Faber Custel', 4000, 2000, 0, '-'),
 ('PRD000014', 'Pulpen Pilot', 3000, 1500, 0, '-'),
@@ -127,7 +157,7 @@ INSERT INTO `produk` (`id_produk`, `nama`, `harga_jual`, `harga_beli`, `stok`, `
 ('PRD000018', 'Gula putih 1 kg', 4000, 2000, 0, '-'),
 ('PRD000019', 'Gula merah 1 kg', 3000, 1500, 0, '-'),
 ('PRD000020', 'Aqua 1000 ml', 3000, 1500, 0, '-'),
-('PRD000021', 'Vit 1000 ml', 2000, 1000, 0, '-'),
+('PRD000021', 'Vit 1000 ml', 2000, 1000, 5, '-'),
 ('PRD000022', 'Amidis 1000 ml', 1500, 750, 0, '-'),
 ('PRD000023', 'Teh Botol 500 ml', 4000, 2000, 0, '-'),
 ('PRD000024', 'Fruit tea 500 ml', 3500, 1750, 0, '-'),
@@ -145,6 +175,14 @@ CREATE TABLE `transaksi` (
   `total` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data untuk tabel `transaksi`
+--
+
+INSERT INTO `transaksi` (`id_transaksi`, `tanggal`, `total`) VALUES
+('TRP000001', '2020-03-08', 44000),
+('TRP000002', '2020-03-08', 19000);
+
 -- --------------------------------------------------------
 
 --
@@ -159,6 +197,13 @@ CREATE TABLE `users` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `password`, `email`, `createdAt`, `updatedAt`) VALUES
+(7, 'superadmin', '$2b$10$EpkNhZ1CREMA91AaEHHeEuN6RTJI0FIjMnokuGjHu7Ovr299BWOqq', 'superadmin@admin.com', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 --
 -- Indexes for dumped tables
@@ -214,19 +259,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `detail_pembelian`
 --
 ALTER TABLE `detail_pembelian`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT untuk tabel `jurnal`
 --
 ALTER TABLE `jurnal`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

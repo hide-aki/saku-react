@@ -61,9 +61,14 @@ function ShowPembelian(props) {
       { title: "Total (Rp)", field: "total" }
     ],
     data: [],
-    detailPanel: rowData => {
-      alert(rowData);
-    },
+    detailPanel: [
+      {
+        tooltip: "Show Detail",
+        render: rowData => {
+          return <h1>Ini detail {rowData.id_transaksi}</h1>;
+        }
+      }
+    ],
     actions: [
       {
         icon: () => <AddBox />,
