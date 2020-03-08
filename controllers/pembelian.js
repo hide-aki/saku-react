@@ -2,6 +2,7 @@
  * @requires import sequelieze
  */
 const Sequelize = require("sequelize");
+const { Op } = require("sequelize");
 /**
  * *inisiasi db untuk menggunakan transaction sequelize
  */
@@ -116,6 +117,10 @@ exports.addPembelian = async (req, res, next) => {
         nominal: total
       }
     ];
+
+    /**
+     * * Buat objek untuk insert ke detail purchase
+     */
     const forInsertDb = req.body.purchase.map(data => ({
       id_transaksi: codePurchase,
       id_produk: data.id_produk,
@@ -123,38 +128,48 @@ exports.addPembelian = async (req, res, next) => {
       subtotal: data.qty * data.harga
     }));
 
-    //update stok produk
-    req.body.purchase.map(async (data, index) => {
-      try {
-        const keepProduct = await Produk.findAll({
-          raw: true,
-          where: { id_produk: data.id_produk }
-        });
-        const update = await db.transaction(async transaction => {
-          await Produk.destroy(
-            { where: { id_produk: keepProduct[0].id_produk } },
-            { transaction }
-          );
-          const stok = parseFloat(keepProduct[0].stok) + parseFloat(data.qty);
-          await Produk.create(
-            {
-              id_produk: keepProduct[0].id_produk,
-              nama: keepProduct[0].nama,
-              harga_jual: keepProduct[0].harga_jual,
-              harga_beli: keepProduct[0].harga_beli,
-              stok,
-              deskripsi: keepProduct[0].deskripsi
-            },
-            { transaction }
-          );
-        });
-      } catch (error) {
-        console.log(error);
+    /**
+     * * Buat sebuah array untuk menampung data id produk yang akan diubah stoknya
+     */
+    const arrayIDProduct = req.body.purchase.map(data => data.id_produk);
+
+    /**
+     * * Buat sebuah array objek untuk menampung data id produk dan qty dari cart purchase
+     */
+    const arrayObjekProduct = req.body.purchase.map(data => ({
+      id_produk: data.id_produk,
+      qty: data.qty
+    }));
+    const sortArrayObjekProduct = arrayObjekProduct.sort((a, b) => {
+      if (a.id_produk < b.id_produk) {
+        return -1;
+      } else if (a.id_produk > b.id_produk) {
+        return 1;
       }
+      return 0;
+    });
+    /**
+     * * Buat sebuah objek yang berisi produk (dari db) yang dibeli dan akan diubah stoknya
+     */
+    const dataProduct = await Produk.findAll({
+      raw: true,
+      where: { id_produk: { [Op.in]: arrayIDProduct } }
+    });
+
+    /**
+     * * Buat sebuah array untuk menampung objek yang sudah berubah nilai stoknya
+     */
+    const updateDataProduct = dataProduct.map((data, index) => {
+      data.stok += sortArrayObjekProduct[index].qty;
+      return data;
     });
 
     const result = await db.transaction(async transaction => {
-      const purchase = await Transaksi.create(
+      const purchase = await Produk.destroy({
+        where: { id_produk: arrayIDProduct },
+        transaction
+      });
+      await Transaksi.create(
         {
           id_transaksi: codePurchase,
           tanggal: new Date(),
@@ -173,10 +188,11 @@ exports.addPembelian = async (req, res, next) => {
       );
       await DetailPembelian.bulkCreate(forInsertDb, { transaction });
 
-      res
-        .status(201)
-        .json({ success: true, data: "Pembelian berhasil disimpan" });
+      await Produk.bulkCreate(updateDataProduct, { transaction });
     });
+    res
+      .status(201)
+      .json({ success: true, data: "Pembelian berhasil disimpan" });
   } catch (error) {
     res.status(500).json({ success: false, error: "Server error" });
   }
