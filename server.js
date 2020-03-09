@@ -78,7 +78,10 @@ app.listen(
  * @private router produk
  * @private router pembelian
  * @private router coa
+ * @private router menu
  */
+const menu = require('./routes/menu');
+app.use("/api/v1/menu", menu);
 const registrasi = require("./routes/register");
 app.use("/api/v1/register", registrasi);
 const login = require("./routes/login");

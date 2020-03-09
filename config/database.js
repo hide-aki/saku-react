@@ -1,7 +1,7 @@
 /**
  * * import sequelize
  */
-const sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 /**
  * * import dotenv
  */
@@ -13,7 +13,7 @@ const dotenv = require('dotenv');
 /**
  * * inisiasi database
  */
-const connection = new sequelize(process.env.DB_NAME, process.env.DB_USER, '', {
+const connection = new Sequelize(process.env.DB_NAME, process.env.DB_USER, '', {
   dialect: 'mysql',
   define: {
     timestamps: false

@@ -75,6 +75,7 @@ function Login(props) {
       if (postLogin.status === 200) {
         await sessionStorage.setItem("key", postLogin.data.token);
         await sessionStorage.setItem("id", postLogin.data.payload.id);
+        await sessionStorage.setItem("kode_klp_menu", postLogin.data.payload.kode_klp_menu);
         const id = sessionStorage.getItem("id");
         setUser(id);
       }

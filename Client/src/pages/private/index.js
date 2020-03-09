@@ -1,4 +1,4 @@
-import React, { useContext, lazy, Suspense } from "react";
+import React, { useContext, lazy, Suspense, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import clsx from "clsx";
 import Drawer from "@material-ui/core/Drawer";
@@ -34,6 +34,9 @@ import { UserContext } from "../../config/UserContext";
 //loading page
 import ContentLoading from "../appLoading/contentLoading";
 
+//axios
+import axios from 'axios';
+
 //import private pages
 const Beranda = lazy(() => import("../private/beranda"));
 const Produk = lazy(() => import("../private/master/produk"));
@@ -44,9 +47,10 @@ const Jurnal = lazy(() => import("../private/laporan/jurnal"));
 const Bukbes = lazy(() => import("../private/laporan/bukubesar"));
 
 export default function Private() {
+  const klp_menu = sessionStorage.getItem('kode_klp_menu');
   const { setUser } = useContext(UserContext);
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -61,6 +65,30 @@ export default function Private() {
       setUser(null);
     }
   };
+  useEffect(() => {
+    async function getMenu() {
+      try {
+        const getMenu = await axios.get(`/api/v1/menu/${klp_menu}`, {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("key")}`
+          }
+        });
+        if (getMenu.data.data.length > 0) {
+          const listImport = getMenu.data.data.map(listImp => ({
+            nama: listImp.nama,
+            url: listImp.form
+          }))
+
+          for (let i = 0)
+
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getMenu();
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className={classes.root}>
@@ -116,155 +144,9 @@ export default function Private() {
           </IconButton>
         </div>
         <Divider />
-        <List>
-          <Route
-            exact
-            path="/"
-            children={({ match, history }) => {
-              return (
-                <ListItem
-                  button
-                  selected={match ? true : false}
-                  onClick={() => {
-                    history.push("/");
-                  }}
-                >
-                  <ListItemIcon>
-                    <DashboardIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Dashboard"></ListItemText>
-                </ListItem>
-              );
-            }}
-          ></Route>
-        </List>
-        <Divider />
-        <List>
-          <ListSubheader inset>Master</ListSubheader>
-          <Route
-            path="/coa"
-            children={({ match, history }) => {
-              return (
-                <ListItem
-                  button
-                  selected={match ? true : false}
-                  onClick={() => {
-                    history.push("/coa");
-                  }}
-                >
-                  <ListItemIcon>
-                    <AccountBalanceWalletIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="COA"></ListItemText>
-                </ListItem>
-              );
-            }}
-          ></Route>
-          <Route
-            path="/produk"
-            children={({ match, history }) => {
-              return (
-                <ListItem
-                  button
-                  selected={match ? true : false}
-                  onClick={() => {
-                    history.push("/produk");
-                  }}
-                >
-                  <ListItemIcon>
-                    <AddToQueueIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Produk"></ListItemText>
-                </ListItem>
-              );
-            }}
-          ></Route>
-        </List>
-        <Divider />
-        <List>
-          <ListSubheader inset>Transaction</ListSubheader>
-          <Route
-            path="/pembelian"
-            children={({ match, history }) => {
-              return (
-                <ListItem
-                  button
-                  selected={match ? true : false}
-                  onClick={() => {
-                    history.push("/pembelian");
-                  }}
-                >
-                  <ListItemIcon>
-                    <ShoppingBasketIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Purchase"></ListItemText>
-                </ListItem>
-              );
-            }}
-          ></Route>
-          <Route
-            path="/penjualan"
-            children={({ match, history }) => {
-              return (
-                <ListItem
-                  button
-                  selected={match ? true : false}
-                  onClick={() => {
-                    history.push("/penjualan");
-                  }}
-                >
-                  <ListItemIcon>
-                    <StoreIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Sale"></ListItemText>
-                </ListItem>
-              );
-            }}
-          ></Route>
-        </List>
-        <Divider />
-        <List>
-          <ListSubheader inset>Report</ListSubheader>
-          <Route
-            path="/jurnal"
-            children={({ match, history }) => {
-              return (
-                <ListItem
-                  button
-                  selected={match ? true : false}
-                  onClick={() => {
-                    history.push("/jurnal");
-                  }}
-                >
-                  <ListItemIcon>
-                    <AssignmentIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="General Journal"></ListItemText>
-                </ListItem>
-              );
-            }}
-          ></Route>
-          <Route
-            path="/bukbes"
-            children={({ match, history }) => {
-              return (
-                <ListItem
-                  button
-                  selected={match ? true : false}
-                  onClick={() => {
-                    history.push("/bukbes");
-                  }}
-                >
-                  <ListItemIcon>
-                    <BookIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Ledger"></ListItemText>
-                </ListItem>
-              );
-            }}
-          ></Route>
-        </List>
-        <Divider />
+        {
+
+        }
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />

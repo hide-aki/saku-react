@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
 //material UI
 import { forwardRef } from "react";
 import AddBox from "@material-ui/icons/AddBox";
@@ -15,12 +16,23 @@ import FirstPage from "@material-ui/icons/FirstPage";
 import LastPage from "@material-ui/icons/LastPage";
 import Remove from "@material-ui/icons/Remove";
 import Search from "@material-ui/icons/Search";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 //material-table
 import MaterialTable from "material-table";
 
+//custom hooks
+import useFormValidationMaster from "../../../../utils/hooks/useFormValidationMaster";
+import validateMasterCoa from "../../../../utils/validate/validateMasterCoa";
+
 //import Dialog
-import AddDialog from "./form-dialogAdd";
+// import AddDialog from "./form-dialogAdd";
 import EditDialog from "./form-dialogEdit";
 
 import { useSnackbar } from "notistack";
@@ -54,6 +66,104 @@ const config = {
   }
 };
 
+const INITIAL_STATE_ADD = { //inisiasi variabel untuk menampung global objek
+  no_coa: "",
+  nama: ""
+};
+
+//Form Add Coa (Children component)
+function FormDialogAdd({ config, open, handleClose, handleCloseWithAction }) {
+  const { enqueueSnackbar } = useSnackbar();
+  const {
+    values,
+    handleChange,
+    handleSubmit,
+    errors,
+    isSubmitting
+  } = useFormValidationMaster(INITIAL_STATE_ADD, validateMasterCoa, addCoaSubmit);
+  const [serverError, setServerError] = useState({ no_coa: "" });
+  async function addCoaSubmit() {
+    const { no_coa, nama } = values;
+    try {
+      const postCoa = await axios.post(
+        "/api/v1/coa",
+        {
+          no_coa,
+          nama
+        },
+        config
+      );
+      if (postCoa.status === 201) {
+        handleCloseWithAction();
+        enqueueSnackbar(postCoa.data.data, { variant: "success" });
+      }
+    } catch (error) {
+      if (error.response.status === 401) {
+        setServerError({
+          no_coa: error.response.data.error
+        });
+      } else if (error.response.status === 409) {
+        setServerError({
+          no_coa: `COA ${no_coa} atau ${nama} sudah ada di sistem`
+        });
+      } else if (error.response.status === 500) {
+        setServerError({ no_coa: error.response.data.error });
+      }
+    }
+  }
+
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="form-dialog-title"
+    >
+      <DialogTitle id="form-dialog-title">Add Coa</DialogTitle>
+      <form autoComplete="off" onSubmit={handleSubmit} noValidate>
+        <DialogContent>
+          <DialogContentText>
+            To add coa data, please fill out the following form
+          </DialogContentText>
+          <TextField
+            autoFocus
+            disabled={isSubmitting}
+            error={errors.no_coa || serverError.no_coa ? true : false}
+            helperText={errors.no_coa || serverError.no_coa}
+            onChange={handleChange}
+            value={values.no_coa}
+            margin="dense"
+            id="no_coa"
+            name="no_coa"
+            label="Coa Number"
+            fullWidth
+          />
+          <TextField
+            disabled={isSubmitting}
+            error={errors.nama ? true : false}
+            helperText={errors.nama}
+            onChange={handleChange}
+            value={values.nama}
+            margin="dense"
+            id="nama"
+            name="nama"
+            label="Coa Name"
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} variant="contained">
+            Cancel
+          </Button>
+          <Button type="submit" variant="contained" color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </form>
+    </Dialog>
+  );
+}
+
+//Parent component 
 function Coa() {
   const { enqueueSnackbar } = useSnackbar();
   const [trigger, setTrigger] = useState("");
@@ -145,7 +255,7 @@ function Coa() {
         actions={table.actions}
       />
       {open && (
-        <AddDialog
+        <FormDialogAdd
           config={config}
           open={open}
           handleClose={() => setOpen(false)}
@@ -157,7 +267,7 @@ function Coa() {
               setTrigger("");
             }
           }}
-        ></AddDialog>
+        ></FormDialogAdd>
       )}
       {openEdit && (
         <EditDialog

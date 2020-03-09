@@ -96,7 +96,7 @@ exports.userLogin = async (req, res, next) => {
         });
       }
       if (await bcrypt.compare(password, user.password)) {
-        let payload = { id: user.id };
+        let payload = { id: user.id, kode_klp_menu: user.kode_klp_menu };
         let token = jwt.sign(payload, jwtOption.secretOrKey);
         res.status(200).json({
           success: true,

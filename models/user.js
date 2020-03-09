@@ -21,7 +21,8 @@ const UsersSchema = connection.define(
     },
     username: { type: Sequelize.STRING },
     password: { type: Sequelize.STRING },
-    email: { type: Sequelize.STRING }
+    email: { type: Sequelize.STRING },
+    kode_klp_menu: { type: Sequelize.STRING }
   },
   {
     freezeTableName: true //*biar gak nambahin 's'
