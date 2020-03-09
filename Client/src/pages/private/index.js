@@ -67,11 +67,7 @@ export default function Private() {
   };
 
   const [stop, setStop] = useState(false);
-  const [menu, setMenu] = useState({
-    title: [],
-    menu: [],
-    content: [],
-  })
+  const [menu, setMenu] = useState([])
   useEffect(() => {
     async function getMenu() {
       try {
