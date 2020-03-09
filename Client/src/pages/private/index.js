@@ -1,4 +1,4 @@
-import React, { useContext, lazy, Suspense, useEffect } from "react";
+import React, { useContext, lazy, Suspense, useEffect, useState } from "react";
 import { Switch, Route } from "react-router-dom";
 import clsx from "clsx";
 import Drawer from "@material-ui/core/Drawer";
@@ -65,6 +65,13 @@ export default function Private() {
       setUser(null);
     }
   };
+
+  const [stop, setStop] = useState(false);
+  const [menu, setMenu] = useState({
+    title: [],
+    menu: [],
+    content: [],
+  })
   useEffect(() => {
     async function getMenu() {
       try {
@@ -74,21 +81,29 @@ export default function Private() {
           }
         });
         if (getMenu.data.data.length > 0) {
-          const listImport = getMenu.data.data.map(listImp => ({
-            nama: listImp.nama,
-            url: listImp.form
-          }))
-
-          for (let i = 0)
-
+          setMenu(menu => {
+            return {
+              ...menu,
+              content: getMenu.data.data.map(menuContent => {
+                return {
+                  path: menuContent.nama,
+                  url: menuContent.form
+                }
+              })
+            }
+          })
+        } else {
+          console.log('Yo')
         }
+        setStop(true)
+        console.log(menu);
       } catch (error) {
         console.log(error)
       }
     }
     getMenu();
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [stop])
 
   return (
     <div className={classes.root}>
@@ -144,9 +159,155 @@ export default function Private() {
           </IconButton>
         </div>
         <Divider />
-        {
-
-        }
+        <List>
+          <Route
+            exact
+            path="/"
+            children={({ match, history }) => {
+              return (
+                <ListItem
+                  button
+                  selected={match ? true : false}
+                  onClick={() => {
+                    history.push("/");
+                  }}
+                >
+                  <ListItemIcon>
+                    <DashboardIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Dashboard"></ListItemText>
+                </ListItem>
+              );
+            }}
+          ></Route>
+        </List>
+        <Divider />
+        <List>
+          <ListSubheader inset>Master</ListSubheader>
+          <Route
+            path="/coa"
+            children={({ match, history }) => {
+              return (
+                <ListItem
+                  button
+                  selected={match ? true : false}
+                  onClick={() => {
+                    history.push("/coa");
+                  }}
+                >
+                  <ListItemIcon>
+                    <AccountBalanceWalletIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="COA"></ListItemText>
+                </ListItem>
+              );
+            }}
+          ></Route>
+          <Route
+            path="/produk"
+            children={({ match, history }) => {
+              return (
+                <ListItem
+                  button
+                  selected={match ? true : false}
+                  onClick={() => {
+                    history.push("/produk");
+                  }}
+                >
+                  <ListItemIcon>
+                    <AddToQueueIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Produk"></ListItemText>
+                </ListItem>
+              );
+            }}
+          ></Route>
+        </List>
+        <Divider />
+        <List>
+          <ListSubheader inset>Transaction</ListSubheader>
+          <Route
+            path="/pembelian"
+            children={({ match, history }) => {
+              return (
+                <ListItem
+                  button
+                  selected={match ? true : false}
+                  onClick={() => {
+                    history.push("/pembelian");
+                  }}
+                >
+                  <ListItemIcon>
+                    <ShoppingBasketIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Purchase"></ListItemText>
+                </ListItem>
+              );
+            }}
+          ></Route>
+          <Route
+            path="/penjualan"
+            children={({ match, history }) => {
+              return (
+                <ListItem
+                  button
+                  selected={match ? true : false}
+                  onClick={() => {
+                    history.push("/penjualan");
+                  }}
+                >
+                  <ListItemIcon>
+                    <StoreIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Sale"></ListItemText>
+                </ListItem>
+              );
+            }}
+          ></Route>
+        </List>
+        <Divider />
+        <List>
+          <ListSubheader inset>Report</ListSubheader>
+          <Route
+            path="/jurnal"
+            children={({ match, history }) => {
+              return (
+                <ListItem
+                  button
+                  selected={match ? true : false}
+                  onClick={() => {
+                    history.push("/jurnal");
+                  }}
+                >
+                  <ListItemIcon>
+                    <AssignmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="General Journal"></ListItemText>
+                </ListItem>
+              );
+            }}
+          ></Route>
+          <Route
+            path="/bukbes"
+            children={({ match, history }) => {
+              return (
+                <ListItem
+                  button
+                  selected={match ? true : false}
+                  onClick={() => {
+                    history.push("/bukbes");
+                  }}
+                >
+                  <ListItemIcon>
+                    <BookIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Ledger"></ListItemText>
+                </ListItem>
+              );
+            }}
+          ></Route>
+        </List>
+        <Divider />
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
